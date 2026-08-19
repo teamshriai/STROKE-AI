@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StrokeAI — Coming Soon</title>
+<meta name="description" content="A mobile alert. AI-guided diagnosis in transit. A coordinated ambulance response. StrokeAI is racing the stroke golden hour — launching soon.">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="StrokeAI — Coming Soon">
+<meta property="og:description" content="A mobile alert. AI-guided diagnosis in transit. A coordinated ambulance response. StrokeAI is racing the stroke golden hour — launching soon.">
+<meta property="og:image" content="/assets/social-preview.png">
+<meta property="og:url" content="https://stroke-ai.org/">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" type="image/png" href="/assets/ribbon-mark.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --navy: #132038;
+    --navy-dark: #0F1930;
+    --crimson: #E2436F;
+    --blue: #3E6FC9;
+    --blue-deep: #2E5AAC;
+    --gold: #F3B94D;
+    --white: #FFFFFF;
+    --soft: #C6D4EE;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--navy);
+    color: var(--soft);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--white);
+    margin: 0;
+  }
+
+  a { color: inherit; }
+
+  img { max-width: 100%; display: block; }
+
+  /* background hub-and-spoke texture, very low opacity */
+  .texture {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image:
+      repeating-linear-gradient(45deg, var(--soft) 0, var(--soft) 1px, transparent 1px, transparent 80px),
+      repeating-linear-gradient(-45deg, var(--soft) 0, var(--soft) 1px, transparent 1px, transparent 80px);
+  }
+
+  header.site-header {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1.5rem clamp(1.25rem, 5vw, 3rem);
+  }
+
+  header.site-header img {
+    width: 32px;
+    height: auto;
+  }
+
+  header.site-header .wordmark {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: 0.08em;
+    color: var(--white);
+  }
+
+  main { position: relative; z-index: 1; }
+
+  section {
+    position: relative;
+    padding: 4rem clamp(1.25rem, 5vw, 3rem);
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ---------- HERO ---------- */
+
+  .hero {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+
+  .pill {
+    display: inline-block;
+    background: var(--crimson);
+    color: var(--white);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    margin-bottom: 2rem;
+  }
+
+  .ribbon-wrap {
+    position: relative;
+    width: clamp(140px, 22vw, 200px);
+    height: clamp(140px, 22vw, 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .ribbon-wrap img {
+    width: 58%;
+    height: auto;
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 8px 24px rgba(226, 67, 111, 0.25));
+  }
+
+  .pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    border: 1px solid rgba(198, 212, 238, 0.35);
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pulse-ring {
+      animation: pulse 3.6s ease-out infinite;
+    }
+    .pulse-ring:nth-child(2) { animation-delay: 1.2s; }
+    .pulse-ring:nth-child(3) { animation-delay: 2.4s; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-ring {
+      width: 100% !important;
+      height: 100% !important;
+      opacity: 0.15;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  .pulse-ring:nth-child(1) { width: 100%; height: 100%; }
+  .pulse-ring:nth-child(2) { width: 100%; height: 100%; }
+  .pulse-ring:nth-child(3) { width: 100%; height: 100%; }
+
+  @keyframes pulse {
+    0%   { transform: translate(-50%, -50%) scale(0.55); opacity: 0; }
+    15%  { opacity: 0.55; }
+    100% { transform: translate(-50%, -50%) scale(1.9); opacity: 0; }
+  }
+
+  /* Two alternate headlines considered, kept here for easy swap:
+     "The Golden Hour Starts the Moment You Call."
+     "Stroke Care, Redesigned Around Time." */
+  .hero h1 {
+    font-size: clamp(2rem, 5.4vw, 3.4rem);
+    font-weight: 700;
+    max-width: 18ch;
+    margin: 0 auto 1.25rem;
+  }
+
+  .hero .subhead {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--soft);
+    max-width: 46ch;
+    margin: 0 auto 2.5rem;
+  }
+
+  .hero .subhead strong { color: var(--white); font-weight: 500; }
+
+  /* ---------- EMAIL FORM ---------- */
+
+  .notify-form {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+
+  .notify-row {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .notify-row label {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .notify-row input[type="email"] {
+    flex: 1 1 220px;
+    min-width: 0;
+    padding: 0.9rem 1.1rem;
+    border-radius: 10px;
+    border: 1px solid rgba(198, 212, 238, 0.25);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--white);
+    font-size: 1rem;
+    font-family: inherit;
+  }
+
+  .notify-row input[type="email"]::placeholder { color: rgba(198, 212, 238, 0.55); }
+
+  .notify-row input[type="email"]:focus,
+  .notify-row button:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+
+  .notify-row button {
+    flex: 0 0 auto;
+    padding: 0.9rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(120deg, var(--crimson), var(--blue-deep));
+    color: var(--white);
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .notify-row button:hover { filter: brightness(1.08); }
+
+  .form-message {
+    margin-top: 0.75rem;
+    font-size: 0.9rem;
+    min-height: 1.4em;
+    text-align: left;
+  }
+
+  .form-message[data-state="error"] { color: var(--crimson); }
+  .form-message[data-state="success"] { color: var(--gold); }
+
+  /* ---------- VISION CARDS ---------- */
+
+  .vision-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+    margin-top: 3rem;
+  }
+
+  @media (max-width: 800px) {
+    .vision-grid { grid-template-columns: 1fr; }
+  }
+
+  .vision-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(198, 212, 238, 0.12);
+    border-radius: 16px;
+    padding: 1.75rem 1.5rem;
+    text-align: left;
+  }
+
+  .vision-card svg { width: 34px; height: 34px; margin-bottom: 1rem; }
+
+  .vision-card h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--white);
+  }
+
+  .vision-card p { font-size: 0.92rem; margin: 0; color: var(--soft); }
+
+  .section-heading {
+    text-align: center;
+    font-size: clamp(1.5rem, 3.2vw, 2rem);
+    max-width: 30ch;
+    margin: 0 auto;
+  }
+
+  /* ---------- ABOUT ---------- */
+
+  .about p {
+    font-size: 1rem;
+    max-width: 68ch;
+    margin: 0 auto 1.25rem;
+  }
+
+  .about p:last-child { margin-bottom: 0; }
+
+  /* ---------- FADE-IN ---------- */
+
+  .fade-section {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-section { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* ---------- FOOTER ---------- */
+
+  footer {
+    position: relative;
+    z-index: 1;
+    background: var(--navy-dark);
+    padding: 3rem clamp(1.25rem, 5vw, 3rem) 2.5rem;
+    text-align: center;
+  }
+
+  .partner-logos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.25rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .partner-logos img:first-child { width: 180px; }
+  .partner-logos img:last-child { width: 64px; }
+
+  footer p {
+    font-size: 0.85rem;
+    color: rgba(198, 212, 238, 0.65);
+    margin: 0.35rem 0;
+  }
+
+  footer .confidential {
+    letter-spacing: 0.04em;
+    color: rgba(198, 212, 238, 0.45);
+  }
+</style>
+</head>
+<body>
+
+<div class="texture" aria-hidden="true"></div>
+
+<header class="site-header">
+  <img src="/assets/ribbon-mark.png" alt="">
+  <span class="wordmark">STROKE-AI</span>
+</header>
+
+<main>
+  <section class="hero">
+    <span class="pill">Launching Soon</span>
+
+    <div class="ribbon-wrap">
+      <span class="pulse-ring" aria-hidden="true"></span>
+      <span class="pulse-ring" aria-hidden="true"></span>
+      <span class="pulse-ring" aria-hidden="true"></span>
+      <img src="/assets/ribbon-mark.png" alt="StrokeAI ribbon mark">
+    </div>
+
+    <h1>Every Minute Counts. We&rsquo;re Building the Response.</h1>
+    <p class="subhead">
+      A mobile alert triggers <strong>AI-guided diagnosis in transit</strong>
+      and a <strong>coordinated ambulance response</strong> &mdash; racing
+      every second of the stroke golden hour.
+    </p>
+
+    <form class="notify-form" id="notify-form" novalidate>
+      <div class="notify-row">
+        <label for="notify-email">Email address</label>
+        <input type="email" id="notify-email" name="email" placeholder="you@example.com" autocomplete="email" required>
+        <button type="submit">Notify Me at Launch</button>
+      </div>
+      <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <section class="fade-section">
+    <h2 class="section-heading">Every second is designed for.</h2>
+    <div class="vision-grid">
+      <div class="vision-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#E2436F" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z"/><path d="M12 18h.01"/><path d="M6 9h3l2-3 2 6 2-3h3"/></svg>
+        <h3>Alert reaches help in seconds</h3>
+        <p>A single tap from the mobile app instantly notifies the Command Center, nearest ambulance, and scan lab at once.</p>
+      </div>
+      <div class="vision-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#3E6FC9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        <h3>AI reads the scan in transit</h3>
+        <p>CT/MRI imaging is analyzed by AI alongside a radiologist while the patient is still on the way to the lab.</p>
+      </div>
+      <div class="vision-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#F3B94D" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17h2a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2H3v10Z"/><path d="M7 17h9V6H7"/><path d="M16 10h3l2 3v4h-2"/><circle cx="8.5" cy="18.5" r="1.5"/><circle cx="17.5" cy="18.5" r="1.5"/></svg>
+        <h3>Treatment begins before arrival</h3>
+        <p>A therapy decision is finalized en-route, so medication starts inside the Stroke AI Ambulance &mdash; not after admission.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="about fade-section">
+    <h2 class="section-heading" style="margin-bottom: 1.75rem;">One mission, two teams.</h2>
+    <p>
+      <strong style="color:var(--white)">IndoStates Health Hospital</strong>
+      brings the clinical and hospital network behind &ldquo;Prevent, Screen,
+      Treat&rdquo; &mdash; decades of frontline emergency and neurology care,
+      and the ambulance and scan-lab partnerships a stroke response depends on.
+    </p>
+    <p>
+      <strong style="color:var(--white)">Shri-AI</strong> brings the AI and
+      telehealth technology behind &ldquo;AI for Health, Care for All&rdquo;
+      &mdash; imaging models, real-time coordination software, and the mobile
+      platform patients and bystanders will actually use.
+    </p>
+    <p>
+      Together, we&rsquo;re building India&rsquo;s first mobile stroke-response
+      network &mdash; combining telehealth, AI-assisted imaging, and a
+      coordinated ambulance network into a single race against the clock.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <div class="partner-logos">
+    <img src="/assets/logo-indostates.png" alt="IndoStates Health Hospital">
+    <img src="/assets/logo-shriai.png" alt="Shri-AI">
+  </div>
+  <p>A joint initiative of IndoStates Health Hospital and Shri-AI</p>
+  <p>&copy; 2026 StrokeAI. All rights reserved.</p>
+  <p class="confidential">Confidential &mdash; stroke-ai.org launching 2026</p>
+</footer>
+
+<script>
+  (function () {
+    "use strict";
+
+    var form = document.getElementById("notify-form");
+    var input = document.getElementById("notify-email");
+    var message = document.getElementById("form-message");
+    var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var value = input.value.trim();
+
+      if (!value) {
+        message.textContent = "Please enter your email address.";
+        message.dataset.state = "error";
+        return;
+      }
+
+      if (!EMAIL_RE.test(value)) {
+        message.textContent = "That doesn't look like a valid email address.";
+        message.dataset.state = "error";
+        return;
+      }
+
+      var subject = encodeURIComponent("Notify me at StrokeAI launch");
+      var body = encodeURIComponent("Please notify me when StrokeAI launches.\n\nMy email: " + value);
+      window.location.href = "mailto:Sena@shri-ai.org?subject=" + subject + "&body=" + body;
+
+      message.textContent = "Opening your email app — hit send to join the list.";
+      message.dataset.state = "success";
+    });
+
+    var fadeEls = document.querySelectorAll(".fade-section");
+    if ("IntersectionObserver" in window && fadeEls.length) {
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      fadeEls.forEach(function (el) { observer.observe(el); });
+    } else {
+      fadeEls.forEach(function (el) { el.classList.add("is-visible"); });
+    }
+  })();
+</script>
+</body>
+</html>
