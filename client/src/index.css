@@ -1,3 +1,7 @@
+/* Same variable DM Sans load as the Shri-AI site — optical-size axis 9..40,
+   weights capped at 300/400/500 (+ italic 300/400) so the two sites share one
+   type system. */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -8,8 +12,8 @@
   --color-navy: #2e5aac;
   --color-gold: #a9701c;
 
-  --font-serif: 'Playfair Display', Georgia, serif;
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-serif: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 html {
@@ -41,51 +45,6 @@ body {
   background-size: 120px 120px;
 }
 
-.pulse-ring {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 1px solid rgba(199, 53, 90, 0.3);
-  transform: translate(-50%, -50%) scale(0.6);
-  opacity: 0;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .pulse-ring {
-    animation: pulse 3.6s ease-out infinite;
-  }
-  .pulse-ring:nth-child(2) {
-    animation-delay: 1.2s;
-  }
-  .pulse-ring:nth-child(3) {
-    animation-delay: 2.4s;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pulse-ring {
-    opacity: 0.12;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-@keyframes pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(0.55);
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.45;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.9);
-    opacity: 0;
-  }
-}
-
 .fade-section {
   opacity: 0;
   transform: translateY(24px);
@@ -102,5 +61,38 @@ body {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+}
+
+/* ── Shri-AI text design, reused as-is: an italic accent word carrying a
+   slow-drifting gradient shimmer, set inside a light-weight, tight-tracked
+   heading. ── */
+.hero-em {
+  font-style: italic;
+  letter-spacing: -0.01em;
+}
+
+.text-shimmer {
+  background: linear-gradient(
+    110deg,
+    #7b6fcd 0%, #a58de8 18%, #3a82c4 36%,
+    #2aaa72 52%, #d4891e 70%, #c7355a 85%, #7b6fcd 100%
+  );
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: text-shimmer-anim 8s linear infinite;
+}
+
+@keyframes text-shimmer-anim {
+  from { background-position: 0% center; }
+  to { background-position: 250% center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-shimmer {
+    animation: none;
+    background-position: 50% center;
   }
 }

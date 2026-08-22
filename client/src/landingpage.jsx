@@ -46,7 +46,7 @@ function Eyebrow({ children, className = '' }) {
   return (
     <div className={`flex items-center gap-3 ${className}`}>
       <span className="h-px w-8 bg-crimson/40" aria-hidden="true"></span>
-      <span className="text-xs font-semibold uppercase tracking-[0.22em] text-crimson">{children}</span>
+      <span className="text-xs font-medium uppercase tracking-[0.22em] text-crimson">{children}</span>
     </div>
   );
 }
@@ -83,7 +83,7 @@ export default function LandingPage() {
       <header className="sticky top-0 z-20 border-b border-ink/10 bg-paper/85 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center gap-2.5 px-6 py-4 sm:px-10 lg:px-12">
           <img src="/assets/logo.webp" alt="Shri-AI" className="h-9 w-9 rounded-lg" />
-          <span className="font-serif text-base font-semibold tracking-wide text-ink">Stroke-AI.org</span>
+          <span className="font-serif text-base font-medium tracking-wide text-ink">Stroke-AI.org</span>
         </div>
       </header>
 
@@ -99,35 +99,48 @@ export default function LandingPage() {
             aria-hidden="true"
           ></div>
 
-          <div className="mb-10 inline-flex items-center gap-3 rounded-full border border-crimson/25 bg-crimson/[0.06] px-5 py-2.5 shadow-[0_1px_3px_rgba(199,53,90,0.08)]">
+          <div className="mb-14 flex flex-col items-center gap-4 sm:mb-16">
+            <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 lg:gap-10">
+              <img
+                src="/assets/logo-shriai.png"
+                alt="Shri-AI — AI for Health, Care for All"
+                className="h-24 w-24 flex-none rounded-2xl object-contain sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36"
+              />
+              <span
+                className="hidden w-px flex-none bg-ink/15 sm:block sm:h-20 md:h-24 lg:h-28"
+                aria-hidden="true"
+              ></span>
+              <img
+                src="/assets/logo-indostates.png"
+                alt="IndoStates Health Hospital"
+                className="h-[clamp(56px,20vw,72px)] w-auto flex-none object-contain sm:h-20 md:h-24 lg:h-28"
+              />
+            </div>
+            <p className="text-center text-xs font-light tracking-[0.02em] text-slate/70 sm:text-sm">
+              Working together to detect stroke earlier and act faster
+            </p>
+          </div>
+
+          <h1 className="mx-auto max-w-3xl text-balance font-sans text-[clamp(2.2rem,5.2vw,4rem)] font-light leading-[1.05] tracking-[-0.03em] text-ink">
+            AI for Stroke.
+            <br />
+            Helping <span className="hero-em text-shimmer">Every Second</span> Count.
+          </h1>
+          <p className="mx-auto mt-7 max-w-[50ch] text-[clamp(1.02rem,1.6vw,1.2rem)] leading-relaxed text-slate">
+            A mobile alert triggers <strong className="font-medium text-ink">AI-guided diagnosis in transit</strong>{' '}
+            and a <strong className="font-medium text-ink">coordinated ambulance response</strong> &mdash; racing
+            every second of the stroke golden hour.
+          </p>
+
+          <div className="mt-12 inline-flex items-center gap-3 rounded-full border border-crimson/25 bg-crimson/[0.06] px-5 py-2.5 shadow-[0_1px_3px_rgba(199,53,90,0.08)]">
             <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-crimson opacity-60"></span>
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-crimson"></span>
             </span>
-            <span className="text-[0.8rem] font-bold uppercase tracking-[0.22em] text-crimson">Launching Soon</span>
+            <span className="text-[0.8rem] font-medium uppercase tracking-[0.22em] text-crimson">Launching Soon</span>
           </div>
 
-          <div className="relative mb-10 flex h-[clamp(120px,17vw,168px)] w-[clamp(120px,17vw,168px)] items-center justify-center">
-            <span className="pulse-ring" aria-hidden="true"></span>
-            <span className="pulse-ring" aria-hidden="true"></span>
-            <span className="pulse-ring" aria-hidden="true"></span>
-            <img
-              src="/assets/logo.webp"
-              alt="Shri-AI — AI for Health, Care for All"
-              className="relative z-10 h-full w-full rounded-3xl border border-ink/10 bg-white object-cover p-2 shadow-[0_10px_30px_rgba(18,22,28,0.08)]"
-            />
-          </div>
-
-          <h1 className="mx-auto max-w-2xl text-balance font-serif text-[clamp(2.1rem,5vw,3.75rem)] font-semibold leading-[1.08] tracking-tight text-ink">
-            Every Minute Counts. We&rsquo;re Building the Response.
-          </h1>
-          <p className="mx-auto mt-6 max-w-[46ch] text-[clamp(1.02rem,1.6vw,1.2rem)] leading-relaxed text-slate">
-            A mobile alert triggers <strong className="font-semibold text-ink">AI-guided diagnosis in transit</strong>{' '}
-            and a <strong className="font-semibold text-ink">coordinated ambulance response</strong> &mdash; racing
-            every second of the stroke golden hour.
-          </p>
-
-          <form className="mx-auto mt-10 w-full max-w-md" onSubmit={handleSubmit} noValidate>
+          <form className="mx-auto mt-6 w-full max-w-md" onSubmit={handleSubmit} noValidate>
             <div className="flex items-stretch overflow-hidden rounded-sm border border-ink/15 bg-white/80 transition-colors focus-within:border-ink/40">
               <label htmlFor="notify-email" className="sr-only">
                 Email address
@@ -145,7 +158,7 @@ export default function LandingPage() {
               />
               <button
                 type="submit"
-                className="flex-none whitespace-nowrap border-l border-ink/15 bg-ink px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-crimson focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson sm:px-7"
+                className="flex-none whitespace-nowrap border-l border-ink/15 bg-ink px-5 py-3.5 text-sm font-medium text-white transition-colors hover:bg-crimson focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson sm:px-7"
               >
                 Notify Me at Launch
               </button>
@@ -167,20 +180,20 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[240px_1fr] lg:gap-16">
             <div>
               <Eyebrow>Why It Matters</Eyebrow>
-              <h2 className="mt-4 font-serif text-[clamp(1.6rem,3vw,2.25rem)] font-semibold leading-tight tracking-tight text-ink">
+              <h2 className="mt-4 font-serif text-[clamp(1.6rem,3vw,2.25rem)] font-medium leading-tight tracking-tight text-ink">
                 Time is brain.
               </h2>
             </div>
             <div>
               <div className="grid grid-cols-1 gap-10 sm:grid-cols-2">
                 <div>
-                  <p className="font-serif text-[clamp(2.5rem,5vw,3.5rem)] font-semibold leading-none text-ink">1.9M</p>
+                  <p className="font-serif text-[clamp(2.5rem,5vw,3.5rem)] font-medium leading-none text-ink">1.9M</p>
                   <p className="mt-3 text-[0.95rem] leading-relaxed text-slate">
                     Neurons lost, on average, for every minute a stroke goes untreated.
                   </p>
                 </div>
                 <div>
-                  <p className="font-serif text-[clamp(2.5rem,5vw,3.5rem)] font-semibold leading-none text-ink">60 min</p>
+                  <p className="font-serif text-[clamp(2.5rem,5vw,3.5rem)] font-medium leading-none text-ink">60 min</p>
                   <p className="mt-3 text-[0.95rem] leading-relaxed text-slate">
                     The golden hour clinicians race against, from first symptom to first treatment.
                   </p>
@@ -202,7 +215,7 @@ export default function LandingPage() {
         <FadeSection className="mx-auto max-w-6xl border-t border-ink/10 px-6 py-20 sm:px-10 lg:px-12 lg:py-28">
           <div className="mb-14">
             <Eyebrow>What We&rsquo;re Building</Eyebrow>
-            <h2 className="mt-4 max-w-xl font-serif text-[clamp(1.6rem,3vw,2.25rem)] font-semibold leading-tight tracking-tight text-ink">
+            <h2 className="mt-4 max-w-xl font-serif text-[clamp(1.6rem,3vw,2.25rem)] font-medium leading-tight tracking-tight text-ink">
               Every second is designed for.
             </h2>
           </div>
@@ -215,7 +228,7 @@ export default function LandingPage() {
                 <path d="M12 18h.01" />
                 <path d="M6 9h3l2-3 2 6 2-3h3" />
               </svg>
-              <h3 className="font-serif text-lg font-semibold text-ink">Alert reaches help in seconds</h3>
+              <h3 className="font-serif text-lg font-medium text-ink">Alert reaches help in seconds</h3>
               <p className="text-[0.95rem] leading-relaxed text-slate">
                 A single tap from the mobile app instantly notifies the Command Center, nearest ambulance, and scan lab at once.
               </p>
@@ -226,7 +239,7 @@ export default function LandingPage() {
                 <circle cx="12" cy="12" r="9" />
                 <path d="M12 7v5l3 3" />
               </svg>
-              <h3 className="font-serif text-lg font-semibold text-ink">AI reads the scan in transit</h3>
+              <h3 className="font-serif text-lg font-medium text-ink">AI reads the scan in transit</h3>
               <p className="text-[0.95rem] leading-relaxed text-slate">
                 CT/MRI imaging is analyzed by AI alongside a radiologist while the patient is still on the way to the lab.
               </p>
@@ -240,7 +253,7 @@ export default function LandingPage() {
                 <circle cx="8.5" cy="18.5" r="1.5" />
                 <circle cx="17.5" cy="18.5" r="1.5" />
               </svg>
-              <h3 className="font-serif text-lg font-semibold text-ink">Treatment begins before arrival</h3>
+              <h3 className="font-serif text-lg font-medium text-ink">Treatment begins before arrival</h3>
               <p className="text-[0.95rem] leading-relaxed text-slate">
                 A therapy decision is finalized en-route, so medication starts inside the Stroke AI Ambulance &mdash; not after admission.
               </p>
@@ -253,18 +266,18 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[240px_1fr] lg:gap-16">
             <div>
               <Eyebrow>Our Team</Eyebrow>
-              <h2 className="mt-4 font-serif text-[clamp(1.6rem,3vw,2.25rem)] font-semibold leading-tight tracking-tight text-ink">
+              <h2 className="mt-4 font-serif text-[clamp(1.6rem,3vw,2.25rem)] font-medium leading-tight tracking-tight text-ink">
                 One mission, two teams.
               </h2>
             </div>
             <div className="flex flex-col gap-6 text-base leading-relaxed text-slate lg:text-[1.05rem]">
               <p>
-                <strong className="font-semibold text-ink">Shri-AI</strong> brings the AI and telehealth technology
+                <strong className="font-medium text-ink">Shri-AI</strong> brings the AI and telehealth technology
                 behind &ldquo;AI for Health, Care for All&rdquo; &mdash; imaging models, real-time coordination
                 software, and the mobile platform patients and bystanders will actually use.
               </p>
               <p>
-                <strong className="font-semibold text-ink">IndoStates Health Hospital</strong> brings the clinical
+                <strong className="font-medium text-ink">IndoStates Health Hospital</strong> brings the clinical
                 and hospital network behind &ldquo;Prevent, Screen, Treat&rdquo; &mdash; decades of frontline
                 emergency and neurology care, and the ambulance and scan-lab partnerships a stroke response depends
                 on.
@@ -283,7 +296,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[240px_1fr] lg:gap-16">
             <div>
               <Eyebrow>Get Involved</Eyebrow>
-              <h2 className="mt-4 font-serif text-[clamp(1.6rem,3vw,2.25rem)] font-semibold leading-tight tracking-tight text-ink">
+              <h2 className="mt-4 font-serif text-[clamp(1.6rem,3vw,2.25rem)] font-medium leading-tight tracking-tight text-ink">
                 Building this with us?
               </h2>
             </div>
@@ -294,7 +307,7 @@ export default function LandingPage() {
               </p>
               <a
                 href="mailto:Sena@shri-ai.org?subject=Partnership%20inquiry%20%E2%80%94%20StrokeAI"
-                className="inline-flex items-center gap-2 border-b border-ink pb-1 text-sm font-semibold text-ink transition-colors hover:border-crimson hover:text-crimson"
+                className="inline-flex items-center gap-2 border-b border-ink pb-1 text-sm font-medium text-ink transition-colors hover:border-crimson hover:text-crimson"
               >
                 Partner with us
                 <span aria-hidden="true">&rarr;</span>
