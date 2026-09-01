@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const SHRI_AI_URL = 'https://shri-ai.org';
+const INDOSTATES_URL = 'https://indostates.com/';
 
 function FadeSection({ children, className = '', ...props }) {
   const ref = useRef(null);
@@ -82,7 +84,15 @@ export default function LandingPage() {
 
       <header className="sticky top-0 z-20 border-b border-ink/10 bg-paper/85 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center gap-2.5 px-6 py-4 sm:px-10 lg:px-12">
-          <img src="/assets/logo.webp" alt="Shri-AI" className="h-9 w-9 rounded-lg" />
+          <a
+            href={SHRI_AI_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit SHRI-AI"
+            className="rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson"
+          >
+            <img src="/assets/logo-shriai.png" alt="SHRI-AI" className="h-9 w-9 rounded-lg object-contain" />
+          </a>
           <span className="font-serif text-base font-medium tracking-wide text-ink">Stroke-AI.org</span>
         </div>
       </header>
@@ -101,20 +111,37 @@ export default function LandingPage() {
 
           <div className="mb-14 flex flex-col items-center gap-4 sm:mb-16">
             <div className="flex flex-wrap items-center justify-center gap-6 md:gap-8 lg:gap-10">
-              <img
-                src="/assets/logo-shriai.png"
-                alt="Shri-AI — AI for Health, Care for All"
-                className="h-24 w-24 flex-none rounded-2xl object-contain sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36"
-              />
+              <a
+                href={SHRI_AI_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visit SHRI-AI"
+                className="flex-none rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson"
+              >
+                <img
+                  src="/assets/logo-shriai.png"
+                  alt="SHRI-AI — AI for Health, Care for All"
+                  className="h-24 w-24 flex-none rounded-2xl object-contain sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36"
+                />
+              </a>
               <span
                 className="hidden w-px flex-none bg-ink/15 sm:block sm:h-20 md:h-24 lg:h-28"
                 aria-hidden="true"
               ></span>
-              <img
-                src="/assets/logo-indostates.png"
-                alt="IndoStates Health Hospital"
-                className="h-[clamp(56px,20vw,72px)] w-auto flex-none object-contain sm:h-20 md:h-24 lg:h-28"
-              />
+              <a
+                href={INDOSTATES_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Visit IndoStates Health Hospital"
+                className="h-[clamp(56px,20vw,72px)] flex-none overflow-hidden border border-ink/10 shadow-[0_10px_30px_rgba(18,22,28,0.08)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson sm:h-20 md:h-24 lg:h-28"
+                style={{ aspectRatio: '1024 / 548' }}
+              >
+                <img
+                  src="/assets/indostates1.webp"
+                  alt="IndoStates Health Hospital"
+                  className="h-full w-full scale-110 object-cover"
+                />
+              </a>
             </div>
             <p className="text-center text-xs font-light tracking-[0.02em] text-slate/70 sm:text-sm">
               Working together to detect stroke earlier and act faster
@@ -272,7 +299,7 @@ export default function LandingPage() {
             </div>
             <div className="flex flex-col gap-6 text-base leading-relaxed text-slate lg:text-[1.05rem]">
               <p>
-                <strong className="font-medium text-ink">Shri-AI</strong> brings the AI and telehealth technology
+                <strong className="font-medium text-ink">SHRI-AI</strong> brings the AI and telehealth technology
                 behind &ldquo;AI for Health, Care for All&rdquo; &mdash; imaging models, real-time coordination
                 software, and the mobile platform patients and bystanders will actually use.
               </p>
@@ -319,14 +346,53 @@ export default function LandingPage() {
 
       <footer className="relative z-10 border-t border-ink/10 px-6 py-14 text-center sm:px-10 lg:px-12">
         <div className="mb-6 flex flex-wrap items-center justify-center gap-9">
-          <img src="/assets/logo.webp" alt="Shri-AI" className="w-16 rounded-xl transition-transform duration-300 hover:scale-105" />
-          <img
-            src="/assets/logo-indostates.png"
-            alt="IndoStates Health Hospital"
-            className="w-[160px] transition-transform duration-300 hover:scale-105"
-          />
+          <a
+            href={SHRI_AI_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit SHRI-AI"
+            className="rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson"
+          >
+            <img
+              src="/assets/logo-shriai.png"
+              alt="SHRI-AI"
+              className="w-16 rounded-xl object-contain transition-transform duration-300 hover:scale-105"
+            />
+          </a>
+          <a
+            href={INDOSTATES_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Visit IndoStates Health Hospital"
+            className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson"
+          >
+            <img
+              src="/assets/logo-indostates.png"
+              alt="IndoStates Health Hospital"
+              className="w-[160px] transition-transform duration-300 hover:scale-105"
+            />
+          </a>
         </div>
-        <p className="my-1.5 text-sm text-slate/80">A joint initiative of Shri-AI and IndoStates Health Hospital</p>
+        <p className="my-1.5 text-sm text-slate/80">
+          A joint initiative of{' '}
+          <a
+            href={SHRI_AI_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-ink underline decoration-ink/25 underline-offset-2 transition-colors hover:text-crimson hover:decoration-crimson"
+          >
+            SHRI-AI
+          </a>{' '}
+          and{' '}
+          <a
+            href={INDOSTATES_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-ink underline decoration-ink/25 underline-offset-2 transition-colors hover:text-crimson hover:decoration-crimson"
+          >
+            IndoStates Health Hospital
+          </a>
+        </p>
         <p className="my-1.5 text-sm text-slate/80">&copy; 2026 StrokeAI. All rights reserved.</p>
       </footer>
     </>
