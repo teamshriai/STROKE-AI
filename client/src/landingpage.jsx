@@ -133,7 +133,7 @@ export default function LandingPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Visit IndoStates Health Hospital"
-                className="h-[clamp(84px,30vw,108px)] flex-none overflow-hidden border border-ink/10 shadow-[0_10px_30px_rgba(18,22,28,0.08)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson sm:h-[120px] md:h-[144px] lg:h-[168px]"
+                className="h-[clamp(96px,35vw,124px)] flex-none overflow-hidden border border-ink/10 shadow-[0_10px_30px_rgba(18,22,28,0.08)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson sm:h-[140px] md:h-[168px] lg:h-[196px]"
                 style={{ aspectRatio: '1024 / 548' }}
               >
                 <img
