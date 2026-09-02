@@ -91,7 +91,7 @@ export default function LandingPage() {
             aria-label="Visit SHRI-AI"
             className="rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson"
           >
-            <img src="/assets/logo-shriai.png" alt="SHRI-AI" className="h-9 w-9 rounded-lg object-contain" />
+            <img src="/assets/shri-ai-logo-trans.webp" alt="SHRI-AI" className="h-9 w-9 rounded-lg object-contain" />
           </a>
           <span className="font-serif text-base font-medium tracking-wide text-ink">Stroke-AI.org</span>
         </div>
@@ -119,7 +119,7 @@ export default function LandingPage() {
                 className="flex-none rounded-2xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson"
               >
                 <img
-                  src="/assets/logo-shriai.png"
+                  src="/assets/shri-ai-logo-trans.webp"
                   alt="SHRI-AI — AI for Health, Care for All"
                   className="h-24 w-24 flex-none rounded-2xl object-contain sm:h-28 sm:w-28 md:h-32 md:w-32 lg:h-36 lg:w-36"
                 />
@@ -133,7 +133,7 @@ export default function LandingPage() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Visit IndoStates Health Hospital"
-                className="h-[clamp(56px,20vw,72px)] flex-none overflow-hidden border border-ink/10 shadow-[0_10px_30px_rgba(18,22,28,0.08)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson sm:h-20 md:h-24 lg:h-28"
+                className="h-[clamp(84px,30vw,108px)] flex-none overflow-hidden border border-ink/10 shadow-[0_10px_30px_rgba(18,22,28,0.08)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson sm:h-[120px] md:h-[144px] lg:h-[168px]"
                 style={{ aspectRatio: '1024 / 548' }}
               >
                 <img
@@ -154,9 +154,8 @@ export default function LandingPage() {
             Helping <span className="hero-em text-shimmer">Every Second</span> Count.
           </h1>
           <p className="mx-auto mt-7 max-w-[50ch] text-[clamp(1.02rem,1.6vw,1.2rem)] leading-relaxed text-slate">
-            A mobile alert triggers <strong className="font-medium text-ink">AI-guided diagnosis in transit</strong>{' '}
-            and a <strong className="font-medium text-ink">coordinated ambulance response</strong> &mdash; racing
-            every second of the stroke golden hour.
+            The intelligent command centre for stroke care{' '}
+            <strong className="font-medium text-ink">— connecting patients, ambulances, labs, hospitals, and AI in real time.</strong>
           </p>
 
           <div className="mt-12 inline-flex items-center gap-3 rounded-full border border-crimson/25 bg-crimson/[0.06] px-5 py-2.5 shadow-[0_1px_3px_rgba(199,53,90,0.08)]">
@@ -354,7 +353,7 @@ export default function LandingPage() {
             className="rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson"
           >
             <img
-              src="/assets/logo-shriai.png"
+              src="/assets/shri-ai-logo-trans.webp"
               alt="SHRI-AI"
               className="w-16 rounded-xl object-contain transition-transform duration-300 hover:scale-105"
             />
