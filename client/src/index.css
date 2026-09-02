@@ -11,6 +11,8 @@
   --color-crimson: #c7355a;
   --color-navy: #2e5aac;
   --color-gold: #a9701c;
+  /* clinical status green — negative/normal findings, met eligibility criteria */
+  --color-verdant: #1e7a44;
 
   --font-serif: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;

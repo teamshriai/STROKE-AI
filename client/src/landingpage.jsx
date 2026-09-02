@@ -1,57 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import Eyebrow from './components/Eyebrow.jsx';
+import FadeSection from './components/FadeSection.jsx';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const SHRI_AI_URL = 'https://shri-ai.org';
 const INDOSTATES_URL = 'https://indostates.com/';
-
-function FadeSection({ children, className = '', ...props }) {
-  const ref = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    if (!('IntersectionObserver' in window)) {
-      setIsVisible(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsVisible(true);
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <section
-      ref={ref}
-      className={`fade-section${isVisible ? ' is-visible' : ''} ${className}`}
-      {...props}
-    >
-      {children}
-    </section>
-  );
-}
-
-function Eyebrow({ children, className = '' }) {
-  return (
-    <div className={`flex items-center gap-3 ${className}`}>
-      <span className="h-px w-8 bg-crimson/40" aria-hidden="true"></span>
-      <span className="text-xs font-medium uppercase tracking-[0.22em] text-crimson">{children}</span>
-    </div>
-  );
-}
 
 export default function LandingPage() {
   const [email, setEmail] = useState('');
@@ -83,17 +37,25 @@ export default function LandingPage() {
       <div className="texture" aria-hidden="true"></div>
 
       <header className="sticky top-0 z-20 border-b border-ink/10 bg-paper/85 backdrop-blur-md">
-        <div className="mx-auto flex max-w-6xl items-center gap-2.5 px-6 py-4 sm:px-10 lg:px-12">
-          <a
-            href={SHRI_AI_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visit SHRI-AI"
-            className="rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson"
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4 sm:px-10 lg:px-12">
+          <div className="flex items-center gap-2.5">
+            <a
+              href={SHRI_AI_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit SHRI-AI"
+              className="rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson"
+            >
+              <img src="/assets/shri-ai-logo-trans.webp" alt="SHRI-AI" className="h-9 w-9 rounded-lg object-contain" />
+            </a>
+            <span className="font-serif text-base font-medium tracking-wide text-ink">Stroke-AI.org</span>
+          </div>
+          <Link
+            to="/app"
+            className="flex-none whitespace-nowrap rounded-md bg-navy px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-navy/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy sm:px-5"
           >
-            <img src="/assets/shri-ai-logo-trans.webp" alt="SHRI-AI" className="h-9 w-9 rounded-lg object-contain" />
-          </a>
-          <span className="font-serif text-base font-medium tracking-wide text-ink">Stroke-AI.org</span>
+            Explore Stroke-AI
+          </Link>
         </div>
       </header>
 
