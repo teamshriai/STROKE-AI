@@ -1,0 +1,19 @@
+# NOTE ON TORCH: plain `pip install torch` on Linux pulls the CUDA build and
+# ~2-3 GB of NVIDIA packages, which is wasted space on a CPU-only server and
+# can fill a small EC2 root volume. Install the CPU wheels FIRST, then this
+# file (see DEPLOYMENT.md):
+#
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+#   pip install -r requirements.txt
+#
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9
+torch>=2.4
+torchvision>=0.19
+pydicom>=3.0
+pylibjpeg>=2.1
+pylibjpeg-libjpeg>=2.4
+pylibjpeg-openjpeg>=2.5
+opencv-python-headless>=4.9
+numpy>=2.0

@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import LandingPage from './landingpage.jsx';
 import AppLayout from './components/AppLayout.jsx';
 import PatientReportPage from './pages/PatientReportPage.jsx';
+import BrainHaemorrhagePathwayPage from './pages/BrainHaemorrhagePathwayPage.jsx';
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
       <Route path="/" element={<LandingPage />} />
       <Route path="/app" element={<AppLayout />}>
         <Route index element={<PatientReportPage />} />
+        <Route path="brain-haemorrhage-pathway" element={<BrainHaemorrhagePathwayPage />} />
       </Route>
     </Routes>
   );
