@@ -82,14 +82,18 @@ source .venv/bin/activate
 pip install --upgrade pip
 ```
 
-**Install the CPU build of PyTorch first.** A plain `pip install torch` pulls
-the CUDA build plus ~3 GB of NVIDIA packages that a GPU-less instance cannot
-use and may not have disk for:
+**Install PyTorch from its CPU index.** This is the normal, supported way to
+install PyTorch on a server without a GPU — about 990 MB installed, and the
+model runs on it exactly as it does anywhere else:
 
 ```bash
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 pip install -r requirements.txt
 ```
+
+The `--index-url` is the part that matters. Leave it off and pip takes torch
+from PyPI, whose Linux build is the CUDA one — it still runs, but it drags in
+~3 GB of NVIDIA libraries this instance has no GPU to use.
 
 ## A5. Smoke-test the API before wiring up systemd
 
@@ -261,14 +265,14 @@ curl -s -X POST -F "sample_id=patient_011_ICHneg_clean" \
 | Warm inference | ~1 s per study on a 16-core box; expect 3-6 s on 2 vCPU |
 | First request after restart | slower — the model loads lazily |
 | Slices analysed per study | 24, evenly spaced, whatever the series length |
-| Disk needed | ~2 GB (repo 280 MB + venv ~1.5 GB + node_modules) |
+| Disk needed | ~1.6 GB (repo 280 MB + venv ~1.1 GB + node_modules ~200 MB) |
 
 ## Troubleshooting
 
 | Symptom | Cause and fix |
 |---|---|
 | `npm run build` fails with a syntax/engine error | Node 18. Install Node 20+ (A3a). |
-| pip pulls gigabytes of `nvidia-*`, or disk fills | The CUDA torch build. Install CPU wheels first (A4). |
+| pip pulls gigabytes of `nvidia-*`, or disk fills | The `--index-url` was left off, so pip took the CUDA build from PyPI. Reinstall per A4. |
 | Upload fails, nginx log shows `413` | `client_max_body_size` missing (A7). |
 | Upload or inference dies near 60 s with `504` | `proxy_read_timeout` missing (A7). |
 | `/app` loads but refreshing it 404s | SPA fallback missing (A7). |

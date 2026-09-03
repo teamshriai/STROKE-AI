@@ -27,8 +27,9 @@ Requires **Node 20+** (Vite 8 will not build on Node 18) and **Python 3.10+**.
 
 ### Backend
 
-Install the **CPU** build of PyTorch first — a plain `pip install torch` pulls
-the CUDA build and ~2-3 GB of NVIDIA packages you don't need:
+Install PyTorch from its CPU index (~990 MB, no GPU packages). Without the
+`--index-url`, pip takes the CUDA build from PyPI and ~3 GB of NVIDIA libraries
+come with it:
 
 ```bash
 cd server
