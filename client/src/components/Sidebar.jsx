@@ -4,6 +4,12 @@ import { INDOSTATES_URL, SHRI_AI_URL } from '../lib/links.js';
 
 const NAV_ITEMS = [
   { to: '/app', end: true, label: 'Patient Report', hint: 'Acute stroke imaging & triage' },
+  {
+    to: '/app/brain-haemorrhage-pathway',
+    end: false,
+    label: 'Brain Haemorrhage Pathway',
+    hint: 'Live NCCT model inference',
+  },
 ];
 
 function linkClasses({ isActive }) {

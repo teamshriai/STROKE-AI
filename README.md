@@ -4,25 +4,45 @@ The intelligent command centre for stroke care — a joint initiative of
 [SHRI-AI](https://shri-ai.org) and [IndoStates Health Hospital](https://indostates.com/).
 
 ```
-client/    Vite + React SPA — the landing page and the in-app Patient Report
+client/    Vite + React SPA — landing page and the in-app demo pages
+server/    FastAPI backend — serves the NCCT haemorrhage model
+deploy/    nginx site config and systemd unit for the EC2 deployment
 assets/    images for the root-level static landing page
-server/    placeholder for the future backend
 ```
+
+**Deploying to a server? See [DEPLOYMENT.md](DEPLOYMENT.md)** — a step-by-step
+AWS EC2 runbook.
 
 ## Pages
 
 | Route | What it is |
 |---|---|
-| `/` | Public landing page. The top-right **Explore Stroke-AI** button leads into the app. |
-| `/app` | **Patient Report** — a sample Acute Stroke Imaging & Triage Report. |
-
-The Patient Report is a **static demonstration page**: it is populated with one published
-sample case (SA-2026-0871) and calls no backend. It is a design and product artefact, not a
-real patient and not live model output.
+| `/` | Public landing page. The top-right **Explore Stroke-AI** button leads into the demo. |
+| `/app` | **Patient Report** — a sample Acute Stroke Imaging & Triage Report (static demonstration case). |
+| `/app/brain-haemorrhage-pathway` | **Brain Haemorrhage Pathway** — runs the trained model live on a real NCCT study. |
 
 ## Running locally
 
-Requires **Node 20+** (Vite 8 will not run on Node 18).
+Requires **Node 20+** (Vite 8 will not build on Node 18) and **Python 3.10+**.
+
+### Backend
+
+Install the **CPU** build of PyTorch first — a plain `pip install torch` pulls
+the CUDA build and ~2-3 GB of NVIDIA packages you don't need:
+
+```bash
+cd server
+python3 -m venv .venv && source .venv/bin/activate
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+```
+
+The model checkpoint (`server/checkpoints/best_model.pt`) and six demo studies
+(`server/test_data/`) are committed, so nothing else needs downloading. Check
+it's up with `curl localhost:8000/api/health`.
+
+### Frontend
 
 ```bash
 cd client
@@ -30,38 +50,55 @@ npm install
 npm run dev          # http://localhost:5173
 ```
 
-## Building for deployment
+`npm run dev` talks to `http://localhost:8000` by default; a production build
+defaults to same-origin `/api` paths. Set `VITE_API_BASE_URL` (see
+`client/.env.example`) only when the API lives on a different host.
 
-```bash
-cd client
-npm install
-npm run build        # emits client/dist/
-npm run preview      # optional: serve the production build locally
-```
+## API
 
-Deploy the contents of `client/dist/` as static files.
+| Endpoint | Purpose |
+|---|---|
+| `GET /api/health` | Liveness check plus the label list. |
+| `GET /api/samples` | The bundled demo studies and their radiologist ground-truth labels. |
+| `POST /api/predict` | Runs the model. Send either `sample_id` (a bundled study) or `files` (uploaded DICOM slices). |
 
-### Important: SPA routing
+Returns study-level probabilities for haemorrhage (ICH), its five subtypes (IPH,
+IVH, SDH, EDH, SAH), mass effect and midline shift, plus per-slice attention
+weights and triple-windowed slice previews.
 
-Routing is client-side (`react-router-dom` with `BrowserRouter`), so the host **must rewrite
-unknown paths to `/index.html`** or a direct visit to `/app` (or a refresh while on it) will
-return 404. The usual form of this:
+Uploads accept a whole series folder (nested subfolders are walked) and
+extensionless PACS-style exports, not just individually selected `.dcm` files.
 
-- **Nginx** — `location / { try_files $uri $uri/ /index.html; }`
-- **Apache** — `FallbackResource /index.html`
-- **Netlify** — `/* /index.html 200` in `_redirects`
-- **Vercel / Cloudflare Pages / S3+CloudFront** — enable the SPA/single-page-app rewrite,
-  or point the 404 handler at `/index.html`
+## About the model
 
-No environment variables and no backend are required for what's in this branch.
+A multiple-instance-learning model (EfficientNet-B0 encoder + gated attention
+pooling over a study's slices) trained on ~320
+[CQ500](http://headctstudy.qure.ai/dataset) studies. Held-out test performance:
+**AUROC 0.878** for any haemorrhage. Inference samples 24 evenly spaced slices
+per study and runs on CPU in about a second.
 
-## Notes for whoever picks this up
+Inputs must be **non-contrast CT (NCCT) head, axial** — the modality it was
+trained on. Bone-kernel, contrast-enhanced and non-head series will produce
+meaningless output.
 
-- Tailwind v4 is configured **CSS-first** — theme tokens live in the `@theme` block of
-  `client/src/index.css`, and there is deliberately no `tailwind.config.js`.
-- Charts on the report page are hand-rolled inline SVG (`client/src/components/report/`), so
-  there is no charting dependency to install or upgrade.
-- Lint with `npm run lint` (oxlint). One pre-existing warning in `FadeSection.jsx` is
-  inherited from the original landing-page code and is not a new issue.
-- The app shell (`AppLayout` + `Sidebar`) is built to take further pages; the sidebar
-  currently has a single entry.
+The six bundled demo studies are real held-out CQ500 patients the model never
+saw during training; their ground-truth labels are the majority vote of three
+radiologists.
+
+## Notes for contributors
+
+- Tailwind v4 is configured **CSS-first** — theme tokens live in the `@theme`
+  block of `client/src/index.css`, and there is deliberately no
+  `tailwind.config.js`.
+- Report charts are hand-rolled inline SVG (`client/src/components/report/`), so
+  there is no charting dependency.
+- Lint with `npm run lint` (oxlint). One pre-existing warning in
+  `FadeSection.jsx` is inherited from the original landing-page code.
+- `server/ml/` mirrors the training-time preprocessing exactly (HU conversion,
+  triple-window rendering, slice ordering by `ImagePositionPatient`). Changing
+  it changes what the model sees, so keep it in step with training.
+
+> **Research prototype — not for clinical use.** All outputs require
+> verification by a qualified radiologist or stroke physician. The Patient
+> Report page is a design demonstration populated with a sample case, not a real
+> patient or live model output.
