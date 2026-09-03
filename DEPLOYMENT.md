@@ -1,100 +1,100 @@
-# Deploying Stroke-AI on AWS EC2
-
-Runbook for a single EC2 instance serving both the frontend and the model API.
-Every command below is copy-pasteable in order.
-
-## What you are deploying
+# Stroke-AI — Deployment
 
 ```
-                    ┌──────────────────── EC2 instance ────────────────────┐
-  browser ──:443──▶ │  nginx                                               │
-                    │    /            ──▶ /var/www/stroke-ai  (static SPA) │
-                    │    /api/        ──▶ 127.0.0.1:8000                   │
-                    │                        └─ uvicorn + FastAPI          │
-                    │                             └─ PyTorch model (CPU)   │
-                    └──────────────────────────────────────────────────────┘
+Server:   52.89.98.162
+Project:  /var/www/stroke-ai.org
+User:     anand
 ```
 
-Both come from one origin, so the frontend needs **no API URL configuration** —
-it calls `/api/...` relative. Port 8000 is bound to localhost and stays closed
-in the security group.
+This is the existing deployment procedure with the backend added. The frontend
+steps are unchanged from what you already run; everything under
+**[Part A](#part-a--one-time-backend-setup)** is one-time setup for the new API,
+and **[Part B](#part-b--routine-deployment)** is the everyday deploy.
 
-The model checkpoint (17 MB) and six demo NCCT studies (~256 MB, 1,028 DICOM
-slices) are **committed to the repo**, so `git clone` brings everything needed.
-There is nothing to download separately and no S3 bucket to wire up.
+## What is new
 
-## 1. Launch the instance
+The site now has two in-app pages behind the **Explore Stroke-AI** button:
 
-| Setting | Value |
+| Route | Needs the backend? |
 |---|---|
-| AMI | Ubuntu Server 24.04 LTS (x86_64) |
-| Instance type | **t3.large** recommended (2 vCPU / 8 GB). `t3.medium` (4 GB) works — the API alone holds ~800 MB once the model loads. |
-| Storage | **20 GB** gp3. The default 8 GB will not fit OS + repo (280 MB) + PyTorch venv (~1.5 GB) + node_modules. |
-| Key pair | your usual `.pem` |
+| `/` — landing page | no |
+| `/app` — Patient Report (static sample report) | no |
+| `/app/brain-haemorrhage-pathway` — runs the CT model | **yes** |
 
-Security group inbound rules:
+So there are three additions to the current setup:
 
-| Port | Source | Why |
-|---|---|---|
-| 22 | **your IP only** | SSH |
-| 80 | 0.0.0.0/0 | HTTP |
-| 443 | 0.0.0.0/0 | HTTPS (after step 8) |
+1. A Python service (`server/`) run by systemd on `127.0.0.1:8000`
+2. Four small nginx changes — `/api/` proxy, SPA fallback, upload limit, timeouts
+3. Node 20+ for the build (Vite 8 will not build on Node 18)
 
-Do **not** open 8000 — nginx reaches the API over localhost.
+The model checkpoint (17 MB) and six demo CT studies (~256 MB, 1,028 DICOM
+slices) are committed to the repo, so `git pull` brings everything. Nothing to
+download separately.
+
+---
+
+# Part A — one-time backend setup
+
+Do this once. Skip to Part B for normal deploys.
+
+## A1. SSH in
 
 ```bash
-ssh -i ~/path/to/key.pem ubuntu@<EC2_PUBLIC_IP>
+ssh -i /home/shri-ai/shri-deploy/shri-key.pem anand@52.89.98.162
 ```
 
-## 2. Install system packages
+## A2. Pull the code that includes the backend
 
 ```bash
-sudo apt-get update && sudo apt-get upgrade -y
+cd /var/www/stroke-ai.org
+sudo chown -R anand:anand /var/www/stroke-ai.org
+git config --global --add safe.directory /var/www/stroke-ai.org
+git pull origin main
 
-# Node 20 — Vite 8 will NOT build on Node 18, which is what Ubuntu ships
+# confirm the model and demo studies arrived
+ls -lh server/checkpoints/best_model.pt        # ~17 MB
+find server/test_data -name '*.dcm' | wc -l    # 1028
+```
+
+## A3. Check the toolchain
+
+```bash
+node --version     # must be v20+ ; if v18, install Node 20 (see A3a)
+python3 --version  # 3.10+
+```
+
+### A3a. Only if Node is older than 20
+
+```bash
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get install -y nodejs
-
-sudo apt-get install -y git nginx python3-venv python3-pip
-
-node --version     # expect v20.x or newer
-python3 --version  # expect 3.12.x
+node --version
 ```
 
-## 3. Clone the repository
+## A4. Python virtualenv and dependencies
 
 ```bash
-sudo mkdir -p /opt/stroke-ai
-sudo chown ubuntu:ubuntu /opt/stroke-ai
-git clone https://github.com/teamshriai/STROKE-AI.git /opt/stroke-ai
-cd /opt/stroke-ai
+sudo apt-get install -y python3-venv
 
-# Confirm the model and demo studies came down with it
-ls -lh server/checkpoints/best_model.pt          # ~17 MB
-ls server/test_data/ | head                      # 6 patient_* folders + CSV
-find server/test_data -name '*.dcm' | wc -l       # 1028
-```
-
-## 4. Backend: virtualenv and dependencies
-
-**Install the CPU build of PyTorch first.** A plain `pip install torch` pulls
-the CUDA build plus ~2-3 GB of NVIDIA packages, which this instance has no GPU
-to use and may not have the disk for.
-
-```bash
-cd /opt/stroke-ai/server
+cd /var/www/stroke-ai.org/server
 python3 -m venv .venv
 source .venv/bin/activate
-
 pip install --upgrade pip
+```
+
+**Install the CPU build of PyTorch first.** A plain `pip install torch` pulls
+the CUDA build plus ~3 GB of NVIDIA packages that a GPU-less instance cannot
+use and may not have disk for:
+
+```bash
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 pip install -r requirements.txt
 ```
 
-Smoke-test it before wiring up systemd:
+## A5. Smoke-test the API before wiring up systemd
 
 ```bash
-cd /opt/stroke-ai/server
+cd /var/www/stroke-ai.org/server
 source .venv/bin/activate
 uvicorn main:app --host 127.0.0.1 --port 8000
 ```
@@ -103,20 +103,21 @@ In a second SSH session:
 
 ```bash
 curl -s localhost:8000/api/health
-curl -s localhost:8000/api/samples | head -c 300
+curl -s localhost:8000/api/samples | head -c 200
 
-# Real inference on a bundled study (first call also loads the model)
+# real inference on a bundled study (first call also loads the model)
 time curl -s -X POST -F "sample_id=patient_048_ICHpos_severe_multi" \
-  localhost:8000/api/predict | head -c 200
+  localhost:8000/api/predict | head -c 120
 ```
 
-You should see `"ICH":0.99...` for that study — it is a known haemorrhage-positive
-case. Then stop the foreground uvicorn with `Ctrl-C`.
+That study is a known haemorrhage-positive case, so expect `"ICH":0.99...`.
+Then stop the foreground uvicorn with `Ctrl-C`.
 
-## 5. Run the backend as a service
+## A6. Run it as a service
 
 ```bash
-sudo cp /opt/stroke-ai/deploy/stroke-ai-api.service /etc/systemd/system/
+sudo cp /var/www/stroke-ai.org/deploy/stroke-ai-api.service \
+        /etc/systemd/system/stroke-ai-api.service
 sudo systemctl daemon-reload
 sudo systemctl enable --now stroke-ai-api
 
@@ -124,121 +125,158 @@ systemctl status stroke-ai-api --no-pager
 curl -s localhost:8000/api/health
 ```
 
-Logs, whenever you need them:
+Logs whenever needed:
 
 ```bash
-journalctl -u stroke-ai-api -f
+sudo journalctl -u stroke-ai-api -f
 ```
 
-## 6. Frontend: build and publish
+## A7. nginx changes
+
+`deploy/nginx-additions.conf` in the repo lists exactly what to add, with the
+reasoning. **Do not replace the existing site file** — it holds the certbot TLS
+config. Edit it and add the four pieces into the `listen 443 ssl` server block:
 
 ```bash
-cd /opt/stroke-ai/client
-npm ci
-npm run build          # emits client/dist/
-
-sudo mkdir -p /var/www/stroke-ai
-sudo rsync -a --delete dist/ /var/www/stroke-ai/
-sudo chown -R www-data:www-data /var/www/stroke-ai
+sudo nano /etc/nginx/sites-available/stroke-ai.org
 ```
 
-No `.env` is needed. An unset `VITE_API_BASE_URL` in a production build means
-same-origin, which is exactly what the nginx config serves.
+- `client_max_body_size 600M;` — a CT series upload is 250 MB+; nginx's default
+  is 1 MB and would fail with `413`
+- change `location /` to `try_files $uri $uri/ /index.html;` — client-side
+  routing means `/app` must fall back to index.html or it 404s on refresh
+- add the `location /api/ { proxy_pass http://127.0.0.1:8000; ... }` block
+  (copy it from `deploy/nginx-additions.conf` — it carries the 300 s timeouts
+  that a large upload plus CPU inference needs)
+- add the `location /assets/` long-cache block
 
-## 7. nginx
+Also confirm `root` is the build directory, not the repo root:
+
+```nginx
+root /var/www/stroke-ai.org/dist;
+```
+
+If it pointed at `/var/www/stroke-ai.org`, the whole repo would be
+web-readable, including the demo DICOM studies.
 
 ```bash
-sudo cp /opt/stroke-ai/deploy/nginx-stroke-ai.conf /etc/nginx/sites-available/stroke-ai
-sudo ln -sf /etc/nginx/sites-available/stroke-ai /etc/nginx/sites-enabled/stroke-ai
-sudo rm -f /etc/nginx/sites-enabled/default
-
 sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-Set the real hostname in that file (`server_name`) once DNS points at the
-instance.
+Port 8000 must stay **closed** in the AWS security group — nginx reaches the
+API over localhost. Only 22, 80 and 443 need to be open.
 
-### Verify
+---
 
-```bash
-curl -s -o /dev/null -w "landing   %{http_code}\n" http://localhost/
-curl -s -o /dev/null -w "deep link %{http_code}\n" http://localhost/app/brain-haemorrhage-pathway
-curl -s -o /dev/null -w "api       %{http_code}\n" http://localhost/api/health
-```
+# Part B — routine deployment
 
-All three must return `200`. The deep link returning 404 means the SPA fallback
-is not active — recheck `try_files` in the site config.
-
-Then open `http://<EC2_PUBLIC_IP>/` in a browser and walk through it:
-
-1. Landing page loads → click **Explore Stroke-AI** (top right)
-2. **Patient Report** renders (the sample triage report)
-3. Sidebar → **Brain Haemorrhage Pathway**
-4. Pick a bundled study → **Run inference** → verdict and probabilities appear
-5. Switch to **Upload DICOM slices** → **Browse folder** → pick a
-   `server/test_data/patient_*` folder copied to your laptop → **Run inference**
-
-## 8. HTTPS (once DNS is pointed at the instance)
+The usual flow, with two backend lines added.
 
 ```bash
-sudo apt-get install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d demo.stroke-ai.org      # use the real hostname
-sudo systemctl status certbot.timer             # auto-renewal
-```
+# 1. SSH in
+ssh -i /home/shri-ai/shri-deploy/shri-key.pem anand@52.89.98.162
 
-Certbot rewrites the nginx site in place and keeps the upload limit and
-timeouts.
+# 2. Go to the project
+cd /var/www/stroke-ai.org
 
-## Redeploying after a change
+# 3. Ensure anand owns the repository
+sudo chown -R anand:anand /var/www/stroke-ai.org
 
-```bash
-cd /opt/stroke-ai
-git pull
+# 4. Mark the repository safe for git (usually only needed once)
+git config --global --add safe.directory /var/www/stroke-ai.org
 
-# backend changed?
-cd server && source .venv/bin/activate && pip install -r requirements.txt
+# 5. Pull the latest code
+git pull origin main
+
+# 6. Frontend: install dependencies (no sudo)
+cd /var/www/stroke-ai.org/client
+npm install
+
+# 7. Frontend: build (no sudo)
+npm run build
+
+# 8. Publish the build to the directory nginx serves
+cd /var/www/stroke-ai.org
+rm -rf dist
+cp -r client/dist dist
+
+# 9. NEW — backend: update dependencies only if server/ changed
+cd /var/www/stroke-ai.org/server
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# 10. NEW — backend: restart the service to pick up new code
 sudo systemctl restart stroke-ai-api
 
-# frontend changed?
-cd /opt/stroke-ai/client && npm ci && npm run build
-sudo rsync -a --delete dist/ /var/www/stroke-ai/
-sudo chown -R www-data:www-data /var/www/stroke-ai
+# 11. Ownership stays with anand
+sudo chown -R anand:anand /var/www/stroke-ai.org
+
+# 12. Let nginx read the files
+sudo chmod -R u=rwX,go=rX /var/www/stroke-ai.org
+
+# 13. Test and reload nginx
+sudo nginx -t
+sudo systemctl reload nginx
 ```
 
-nginx does not need reloading for a frontend rebuild.
+If only the frontend changed, steps 9 and 10 can be skipped. If only the
+backend changed, steps 6-8 can be skipped.
 
-## Performance notes, measured
+## Verify the deployment
+
+```bash
+curl -s -o /dev/null -w "landing   %{http_code}\n" https://stroke-ai.org/
+curl -s -o /dev/null -w "report    %{http_code}\n" https://stroke-ai.org/app
+curl -s -o /dev/null -w "pathway   %{http_code}\n" https://stroke-ai.org/app/brain-haemorrhage-pathway
+curl -s -o /dev/null -w "api       %{http_code}\n" https://stroke-ai.org/api/health
+systemctl is-active stroke-ai-api
+```
+
+All four must be `200` and the service `active`. A 404 on `report`/`pathway`
+means the SPA fallback is missing (step A7).
+
+Then in a browser:
+
+1. Landing page → click **Explore Stroke-AI** (top right)
+2. **Patient Report** renders
+3. Sidebar → **Brain Haemorrhage Pathway**
+4. Pick a bundled study → **Run inference** → verdict and probabilities appear
+5. **Upload DICOM slices** tab → **Browse folder** → pick a whole series folder
+   → **Run inference**
+
+Warm the model after a restart so the first real visitor doesn't wait for it to
+load:
+
+```bash
+curl -s -X POST -F "sample_id=patient_011_ICHneg_clean" \
+  localhost:8000/api/predict -o /dev/null
+```
+
+## Measured behaviour
 
 | | |
 |---|---|
 | API memory, model loaded | ~800 MB resident, one worker |
-| Warm inference, 272-slice study | ~1 s on a 16-core dev box; expect ~3-6 s on 2 vCPU |
-| First request after restart | slower — the model loads lazily on first use |
-| Slices actually analysed | 24, evenly spaced across the series, whatever its length |
-
-To avoid a slow first visit, warm the model on deploy:
-
-```bash
-curl -s -X POST -F "sample_id=patient_011_ICHneg_clean" localhost:8000/api/predict -o /dev/null
-```
-
-Raise `--workers` in the service file only with RAM to spare — each worker
-loads its own ~800 MB copy of the model.
+| Warm inference | ~1 s per study on a 16-core box; expect 3-6 s on 2 vCPU |
+| First request after restart | slower — the model loads lazily |
+| Slices analysed per study | 24, evenly spaced, whatever the series length |
+| Disk needed | ~2 GB (repo 280 MB + venv ~1.5 GB + node_modules) |
 
 ## Troubleshooting
 
 | Symptom | Cause and fix |
 |---|---|
-| `npm run build` fails with a syntax/engine error | Node 18. Install Node 20+ (step 2). |
-| pip pulls gigabytes of `nvidia-*` packages, or disk fills | The CUDA torch build. Install the CPU wheels first (step 4). |
-| Upload fails, nginx logs `413` | `client_max_body_size` — the shipped config sets 600M; confirm your site file is the one enabled. |
-| Upload or inference dies at ~60 s with `504` | `proxy_read_timeout` — shipped config sets 300s. |
-| `/app` works but a refresh 404s | SPA fallback missing; `try_files $uri $uri/ /index.html`. |
-| Pathway page shows "Could not reach the API" | `systemctl status stroke-ai-api`, then `journalctl -u stroke-ai-api -n 50`. |
-| Service dies on start, log says `No such file or directory: checkpoints/best_model.pt` | Clone is incomplete. Re-clone; the checkpoint is committed. |
-| Service killed, `journalctl` shows OOM | Instance too small for the worker count. Use t3.large or `--workers 1`. |
-| `502 Bad Gateway` | Backend down or not on 127.0.0.1:8000. Check the service, then `curl localhost:8000/api/health`. |
+| `npm run build` fails with a syntax/engine error | Node 18. Install Node 20+ (A3a). |
+| pip pulls gigabytes of `nvidia-*`, or disk fills | The CUDA torch build. Install CPU wheels first (A4). |
+| Upload fails, nginx log shows `413` | `client_max_body_size` missing (A7). |
+| Upload or inference dies near 60 s with `504` | `proxy_read_timeout` missing (A7). |
+| `/app` loads but refreshing it 404s | SPA fallback missing (A7). |
+| Pathway page says it cannot reach the API | `systemctl status stroke-ai-api`, then `sudo journalctl -u stroke-ai-api -n 50`. |
+| `502 Bad Gateway` on `/api/` | Service down or not on 127.0.0.1:8000. |
+| Service fails: `No such file or directory: checkpoints/best_model.pt` | Incomplete pull. Re-run `git pull origin main`; the checkpoint is committed. |
+| Service killed, journal shows OOM | Too little RAM for the worker count. Keep `--workers 1`. |
+| `git pull` refuses: "dubious ownership" | Step 3 and 4 of Part B. |
 
 ## Note on what this is
 
@@ -246,4 +284,4 @@ The Brain Haemorrhage Pathway model is a **research prototype** trained on ~320
 CQ500 studies (held-out AUROC 0.878) and is **not for clinical use**. The
 Patient Report page is a static design demonstration of one sample case, not
 live model output. Both carry on-screen notices to that effect — please keep
-them in place on any public deployment.
+them in place on the public deployment.

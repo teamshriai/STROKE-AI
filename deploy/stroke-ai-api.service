@@ -1,39 +1,40 @@
 # Stroke-AI backend (FastAPI + PyTorch) as a systemd service.
 #
 # Install:
-#   sudo cp deploy/stroke-ai-api.service /etc/systemd/system/stroke-ai-api.service
+#   sudo cp /var/www/stroke-ai.org/deploy/stroke-ai-api.service \
+#           /etc/systemd/system/stroke-ai-api.service
 #   sudo systemctl daemon-reload
 #   sudo systemctl enable --now stroke-ai-api
 #
-# Logs:  journalctl -u stroke-ai-api -f
+# Logs:  sudo journalctl -u stroke-ai-api -f
 
 [Unit]
-Description=Stroke-AI demo API (FastAPI + PyTorch NCCT haemorrhage model)
+Description=Stroke-AI API (FastAPI + PyTorch NCCT haemorrhage model)
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=simple
-User=ubuntu
-Group=ubuntu
-WorkingDirectory=/opt/stroke-ai/server
+User=anand
+Group=anand
+WorkingDirectory=/var/www/stroke-ai.org/server
 
 # Bound to localhost only — nginx is the only thing that should reach it, so
-# port 8000 stays closed in the EC2 security group.
-ExecStart=/opt/stroke-ai/server/.venv/bin/uvicorn main:app \
+# port 8000 stays closed in the AWS security group.
+ExecStart=/var/www/stroke-ai.org/server/.venv/bin/uvicorn main:app \
     --host 127.0.0.1 --port 8000 --workers 1
 
-# Each worker loads its own copy of the model (~800 MB resident with torch), so
-# raise --workers only if the instance has the RAM for it.
+# Each worker loads its own copy of the model (~800 MB resident with torch),
+# so raise --workers only if the instance has the RAM to spare.
 #
-# Cap torch's thread pool to the instance's vCPUs; left unset it spawns a thread
-# per core and thrashes on small instances.
+# Cap torch's thread pool to the instance's vCPU count; left unset it spawns a
+# thread per core and thrashes on a small instance.
 Environment="OMP_NUM_THREADS=2"
 Environment="MKL_NUM_THREADS=2"
 
-# Origins allowed to call the API from a browser. Not needed for the nginx
-# same-origin setup above; set it only if the frontend is served elsewhere.
-# Environment="STROKE_AI_ALLOWED_ORIGINS=https://demo.stroke-ai.org"
+# Not needed while nginx serves the frontend and API from one hostname.
+# Set only if the frontend is ever served from a different origin:
+# Environment="STROKE_AI_ALLOWED_ORIGINS=https://stroke-ai.org"
 
 Restart=on-failure
 RestartSec=5

@@ -6,12 +6,12 @@ The intelligent command centre for stroke care — a joint initiative of
 ```
 client/    Vite + React SPA — landing page and the in-app demo pages
 server/    FastAPI backend — serves the NCCT haemorrhage model
-deploy/    nginx site config and systemd unit for the EC2 deployment
+deploy/    nginx additions and systemd unit for the server deployment
 assets/    images for the root-level static landing page
 ```
 
-**Deploying to a server? See [DEPLOYMENT.md](DEPLOYMENT.md)** — a step-by-step
-AWS EC2 runbook.
+**Deploying to the server? See [DEPLOYMENT.md](DEPLOYMENT.md)** — the deployment
+runbook for stroke-ai.org, covering the backend service and the nginx changes.
 
 ## Pages
 
