@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import LandingPage from './landingpage.jsx';
+import LandingPage from './components/landing/LandingPage.jsx';
 import AppLayout from './components/AppLayout.jsx';
 import PatientReportPage from './pages/PatientReportPage.jsx';
 import BrainHaemorrhagePathwayPage from './pages/BrainHaemorrhagePathwayPage.jsx';
