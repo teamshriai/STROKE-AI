@@ -1,5 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Eyebrow from '../components/Eyebrow.jsx';
+import {
+  SELECT_CHEVRON,
+  buttonOutline,
+  buttonPrimary,
+  buttonSolid,
+  selectControl,
+  tabGroup,
+  tabItem,
+} from '../components/buttonStyles.js';
 import { StatusPill } from '../components/report/ReportPrimitives.jsx';
 import { fetchSamples, predictSample, predictUpload } from '../lib/api.js';
 import { filesFromDropEvent, isDicomLike, totalMegabytes } from '../lib/dicomFiles.js';
@@ -123,7 +132,7 @@ export default function BrainHaemorrhagePathwayPage() {
 
       {/* ── Input ─────────────────────────────────────────────────── */}
       <section className="mt-8 rounded-xl border border-ink/10 bg-white/60 p-5 sm:p-6">
-        <div className="flex flex-wrap gap-2" role="tablist" aria-label="Input source">
+        <div className={tabGroup} role="tablist" aria-label="Input source">
           {[
             { key: 'sample', label: 'Bundled sample study' },
             { key: 'upload', label: 'Upload DICOM slices' },
@@ -133,17 +142,16 @@ export default function BrainHaemorrhagePathwayPage() {
               type="button"
               role="tab"
               aria-selected={mode === tab.key}
+              aria-controls="input-panel"
               onClick={() => setMode(tab.key)}
-              className={`rounded-md px-4 py-2 text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy ${
-                mode === tab.key ? 'bg-ink text-white' : 'bg-ink/[0.04] text-slate hover:text-ink'
-              }`}
+              className={tabItem(mode === tab.key)}
             >
               {tab.label}
             </button>
           ))}
         </div>
 
-        <div className="mt-5">
+        <div className="mt-5" id="input-panel" role="tabpanel">
           {mode === 'sample' ? (
             <div>
               <label htmlFor="sample-select" className="block text-xs uppercase tracking-[0.14em] text-slate/70">
@@ -161,7 +169,8 @@ export default function BrainHaemorrhagePathwayPage() {
                     id="sample-select"
                     value={selectedSample}
                     onChange={(e) => setSelectedSample(e.target.value)}
-                    className="mt-2 w-full max-w-md rounded-md border border-ink/15 bg-white px-3 py-2.5 text-sm text-ink focus:border-ink/40 focus:outline-none"
+                    className={`mt-2 ${selectControl}`}
+                    style={SELECT_CHEVRON}
                   >
                     {samples.map((sample) => (
                       <option key={sample.id} value={sample.id}>
@@ -200,7 +209,7 @@ export default function BrainHaemorrhagePathwayPage() {
                 }`}
               >
                 <p className="text-sm text-ink">
-                  Drag and drop the patient&rsquo;s <strong className="font-medium">series folder</strong> here
+                  Drag and drop the patient&rsquo;s <strong className="font-medium">NCCT test data</strong> here
                 </p>
                 <p className="mt-1 text-xs text-slate/70">
                   Whole folders are read automatically, including nested subfolders — or drop the individual .dcm
@@ -210,14 +219,14 @@ export default function BrainHaemorrhagePathwayPage() {
                   <button
                     type="button"
                     onClick={() => folderInputRef.current?.click()}
-                    className="rounded-md bg-ink px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-ink/85 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+                    className={buttonSolid}
                   >
                     Browse folder
                   </button>
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="rounded-md border border-ink/20 px-4 py-2 text-sm text-ink transition-colors hover:border-ink/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+                    className={buttonOutline}
                   >
                     Browse files
                   </button>
@@ -258,7 +267,7 @@ export default function BrainHaemorrhagePathwayPage() {
           type="button"
           onClick={handleRun}
           disabled={!canRun || isRunning}
-          className="mt-6 rounded-md bg-navy px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-navy/90 disabled:cursor-not-allowed disabled:bg-ink/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+          className={`mt-6 ${buttonPrimary}`}
         >
           {isRunning ? 'Running inference…' : 'Run inference'}
         </button>

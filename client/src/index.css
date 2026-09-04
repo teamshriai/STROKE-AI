@@ -1,7 +1,7 @@
-/* Same variable DM Sans load as the Shri-AI site — optical-size axis 9..40,
-   weights capped at 300/400/500 (+ italic 300/400) so the two sites share one
-   type system. */
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300;1,9..40,400&display=swap');
+/* Same variable DM Sans load as the Shri-AI site — optical-size axis 9..40.
+   Upright runs the full 300..700 axis (the report's field titles are set in real
+   600/700, not a browser-synthesised fake bold); italic stays 300..500. */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..500&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -11,6 +11,11 @@
   --color-crimson: #c7355a;
   --color-navy: #2e5aac;
   --color-gold: #a9701c;
+  /* Accessible text step of the same gold ramp. --color-gold measures 4.04:1 on
+     paper — fine for a chart mark (3:1 floor) but under the 4.5:1 small-text
+     floor, so gold *labels* wear this step (4.93:1 on paper, 4.53:1 over a
+     gold/7% tint) while gold *marks* keep the brand hex. */
+  --color-gold-ink: #9a6200;
   /* clinical status green — negative/normal findings, met eligibility criteria */
   --color-verdant: #1e7a44;
 
@@ -96,5 +101,46 @@ body {
   .text-shimmer {
     animation: none;
     background-position: 50% center;
+  }
+}
+
+/* ── Chart motion ──────────────────────────────────────────────────────────
+   Data marks draw themselves in once, on mount: the risk needle sweeps up from
+   zero, arcs and bars grow from their baseline. Every one of these is purely
+   decorative — the value is already in the DOM as text — so they all collapse
+   to their final frame under prefers-reduced-motion. ── */
+
+@keyframes needle-sweep {
+  from { transform: rotate(-90deg); }
+}
+
+@keyframes arc-draw {
+  from { stroke-dashoffset: var(--arc-length); }
+}
+
+@keyframes bar-grow {
+  from { transform: scaleX(0); }
+}
+
+.needle-sweep {
+  transform-box: view-box;
+  transform-origin: var(--pivot-x) var(--pivot-y);
+  animation: needle-sweep 1.5s cubic-bezier(0.22, 1.4, 0.36, 1) backwards;
+}
+
+.arc-draw {
+  animation: arc-draw 1.3s cubic-bezier(0.33, 1, 0.68, 1) backwards;
+}
+
+.bar-grow {
+  transform-origin: left center;
+  animation: bar-grow 0.9s cubic-bezier(0.33, 1, 0.68, 1) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .needle-sweep,
+  .arc-draw,
+  .bar-grow {
+    animation: none;
   }
 }

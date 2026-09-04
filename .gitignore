@@ -1,0 +1,18 @@
+# The backend's virtualenv belongs in server/.venv (see README.md — every
+# documented `python3 -m venv .venv` is run after `cd server`). A .venv here at
+# the repository root means that command was run one directory too high: it
+# shadows server/.venv on PATH while containing nothing, so the app breaks in
+# confusing ways. Ignored here so a stray one can never be committed.
+.venv/
+venv/
+env/
+ENV/
+
+__pycache__/
+*.py[cod]
+
+.env
+.env.local
+
+.DS_Store
+*.log
