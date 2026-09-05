@@ -32,8 +32,13 @@ const STEPS = [
     title: 'Nearest ambulance',
     chip: 'Dispatch + vitals',
     desc: 'Reaches the patient, starts initial care, then drives to the scan lab.',
-    photo: 'https://images.unsplash.com/photo-1587745416684-47953f16f02f?auto=format&fit=crop&w=600&q=70',
-    alt: 'An ambulance on a city street',
+    /* Tamil Nadu government 108 ambulance — the actual fleet this network
+       dispatches, rather than a generic foreign ambulance.
+       "The 108 Ambulance" by Wikimedia Commons user UY Scuti, CC BY-SA 3.0:
+       commons.wikimedia.org/wiki/File:The_108_Ambulance.jpg
+       Cropped to the 5:4 card frame and hosted locally. */
+    photo: '/landing/ambulance-108-tn.webp',
+    alt: 'A Tamil Nadu government 108 emergency ambulance responding on a highway',
   },
   {
     num: '03',
@@ -53,11 +58,12 @@ const STEPS = [
     title: 'Stroke AI ambulance',
     chip: 'Meds decided',
     desc: 'Meets the patient at the lab and gives the medication en route.',
-    /* Side profile facing right, so the vehicle reads as travelling along the
-       flow. Wikimedia Commons, CC0 (Raysonho), hosted locally:
-       commons.wikimedia.org/wiki/File:YorkRegionParamedicAmbulance.jpg */
-    photo: '/landing/stroke-ambulance.webp',
-    alt: 'A paramedic ambulance seen side-on',
+    /* The programme's own vehicle, in SHRI-AI + IndoStates Health livery,
+       outside the IndoStates building. Supplied by the team
+       (public/assets/stroke-ai-ambulace.png); cropped to the 5:4 card frame
+       and re-encoded as WebP — the source PNG is 2.2 MB. */
+    photo: '/landing/stroke-ai-ambulance.webp',
+    alt: 'The Stroke AI ambulance in SHRI-AI and IndoStates Health livery, outside the IndoStates building',
     badge: 'AI',
   },
   {
