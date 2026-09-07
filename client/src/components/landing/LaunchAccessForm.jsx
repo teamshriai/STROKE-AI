@@ -1,11 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
-import { BODY, STRONG, LABEL, INK, INK_BODY, INK_SUBTLE, RULE, FLOW_AMBER, FLOW_CORAL, EASE } from './theme.js'
+import {
+  BODY, STRONG, LABEL, INK, INK_BODY, INK_SUBTLE, RULE,
+  ON_DARK, ON_DARK_BODY, ON_DARK_RULE,
+  FLOW_AMBER, FLOW_CORAL, EASE,
+} from './theme.js'
 
 /* ═══════════════════════════════════════════════════════════════════
-   LaunchAccessForm — the work-email capture that closes the landing
-   page, sitting in the footer's signup band. Front-end only: there is no
+   LaunchAccessForm — email capture. Front-end only: there is no
    lead-capture backend yet, so this validates and confirms locally
    rather than pretending to call an endpoint that doesn't exist.
+
+   Used twice, on opposite grounds — the hero's dark blue and the
+   footer's cream — so the palette comes from `tone` rather than being
+   baked in, and the copy comes from props so neither caller has to fork
+   the validation logic.
 
    Self-contained: it carries its own focus-ring rule so it doesn't
    depend on a class declared by whichever section renders it.
@@ -13,11 +21,23 @@ import { BODY, STRONG, LABEL, INK, INK_BODY, INK_SUBTLE, RULE, FLOW_AMBER, FLOW_
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-export default function LaunchAccessForm() {
+const PALETTE = {
+  light: { text: INK, label: INK_SUBTLE, caption: INK_BODY, rule: RULE },
+  dark: { text: ON_DARK, label: ON_DARK_BODY, caption: ON_DARK_BODY, rule: ON_DARK_RULE },
+}
+
+export default function LaunchAccessForm({
+  tone = 'light',
+  label = 'Work email',
+  placeholder = 'you@hospital.org',
+  submitLabel = 'Request Launch Access',
+}) {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState('idle') // idle | submitting | error | success
   const [errorMsg, setErrorMsg] = useState('')
   const timerRef = useRef(null)
+
+  const c = PALETTE[tone] ?? PALETTE.light
 
   useEffect(() => () => window.clearTimeout(timerRef.current), [])
 
@@ -28,7 +48,7 @@ export default function LaunchAccessForm() {
     const trimmed = email.trim()
     if (!EMAIL_RE.test(trimmed)) {
       setStatus('error')
-      setErrorMsg('Enter a valid work email address.')
+      setErrorMsg('Enter a valid email address.')
       return
     }
 
@@ -49,14 +69,14 @@ export default function LaunchAccessForm() {
       `}</style>
 
       {status === 'success' ? (
-        <p role="status" style={{ ...STRONG, color: INK, fontSize: 'clamp(14px, 1.1vw, 16px)', lineHeight: 1.6, margin: 0 }}>
+        <p role="status" style={{ ...STRONG, color: c.text, fontSize: 'clamp(14px, 1.1vw, 16px)', lineHeight: 1.6, margin: 0 }}>
           Thanks — we'll be in touch when Stroke AI is ready for your hospital.
         </p>
       ) : (
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: 'clamp(10px, 1.6vw, 16px)' }}>
           <label style={{ flex: '1 1 200px', minWidth: 0 }}>
-            <span style={{ ...LABEL, color: INK_SUBTLE, display: 'block', marginBottom: '6px' }}>
-              Work email
+            <span style={{ ...LABEL, color: c.label, display: 'block', marginBottom: '6px' }}>
+              {label}
             </span>
             <input
               type="email"
@@ -67,7 +87,7 @@ export default function LaunchAccessForm() {
                 setEmail(e.target.value)
                 if (status === 'error') setStatus('idle')
               }}
-              placeholder="you@hospital.org"
+              placeholder={placeholder}
               className="sa-launch-field"
               style={{
                 ...BODY,
@@ -75,11 +95,11 @@ export default function LaunchAccessForm() {
                 width: '100%',
                 background: 'transparent',
                 border: 'none',
-                borderBottom: `1px solid ${status === 'error' ? FLOW_CORAL : RULE}`,
+                borderBottom: `1px solid ${status === 'error' ? FLOW_CORAL : c.rule}`,
                 borderRadius: 0,
                 padding: '8px 2px',
                 fontSize: 'clamp(14px, 1.1vw, 16px)',
-                color: INK,
+                color: c.text,
                 transition: `border-color 0.25s ${EASE}`,
               }}
             />
@@ -103,7 +123,7 @@ export default function LaunchAccessForm() {
               transition: 'opacity 0.2s ease',
             }}
           >
-            {status === 'submitting' ? 'Sending…' : 'Request Launch Access'}
+            {status === 'submitting' ? 'Sending…' : submitLabel}
           </button>
         </div>
       )}
@@ -115,7 +135,7 @@ export default function LaunchAccessForm() {
       )}
 
       {status !== 'success' && (
-        <p style={{ ...BODY, color: INK_BODY, fontSize: '12px', lineHeight: 1.6, margin: '12px 0 0' }}>
+        <p style={{ ...BODY, color: c.caption, fontSize: '12px', lineHeight: 1.6, margin: '12px 0 0' }}>
           No spam. We'll only reach out when Stroke AI is ready for your hospital.
         </p>
       )}

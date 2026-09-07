@@ -8,6 +8,7 @@ import {
 } from './theme.js'
 import ArchitectureFlow from './ArchitectureFlow.jsx'
 import PartnerMap from './PartnerMap.jsx'
+import LaunchAccessForm from './LaunchAccessForm.jsx'
 import PatientReportPage from '../../pages/PatientReportPage.jsx'
 import { Reveal, SectionHead } from './primitives.jsx'
 
@@ -362,16 +363,12 @@ export default function LandingHeader() {
               transition: `opacity 0.9s ${EASE} 320ms, transform 0.9s ${EASE} 320ms`,
             }}
           >
-            {/* The launch-access form lives in the footer now; the hero just
-                states where the product is. */}
-            <span style={{
-              ...LABEL,
-              fontSize: 'clamp(12px, 1.1vw, 14px)',
-              letterSpacing: '0.26em',
-              color: FLOW_AMBER,
-            }}>
-              Launching soon
-            </span>
+            <LaunchAccessForm
+              tone="dark"
+              label="Your email"
+              placeholder="you@gmail.com"
+              submitLabel="Notify the Launch"
+            />
           </div>
         </div>
 

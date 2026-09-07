@@ -58,10 +58,10 @@ const STEPS = [
     title: 'Stroke AI ambulance',
     chip: 'Meds decided',
     desc: 'Meets the patient at the lab and gives the medication en route.',
-    /* The programme's own vehicle, in SHRI-AI + IndoStates Health livery,
-       outside the IndoStates building. Supplied by the team
-       (public/assets/stroke-ai-ambulace.png); cropped to the 5:4 card frame
-       and re-encoded as WebP — the source PNG is 2.2 MB. */
+    /* The programme's own vehicle, in SHRI-AI + IndoStates Health livery.
+       Supplied by the team (public/assets/stroke-ai-ambulance.png); cropped
+       to the 5:4 card frame and re-encoded as WebP — the source PNG is
+       6.9 MB, for a card that renders around 230px wide. */
     photo: '/landing/stroke-ai-ambulance.webp',
     alt: 'The Stroke AI ambulance in SHRI-AI and IndoStates Health livery, outside the IndoStates building',
     badge: 'AI',
