@@ -14,11 +14,15 @@ import { BODY, STRONG, INK, INK_BODY, PAPER, RULE, EASE } from './theme.js'
  * makes any fixed pixel threshold meaningless.
  */
 
+/* `external: true` leaves the site, so those links open in a new tab and
+   carry rel="noopener noreferrer" — without noopener the opened page can
+   reach back through window.opener. */
 const NAV_LINKS = [
   { label: 'Our Command Centre', href: '#services' },
   { label: 'Why It Matters', href: '#how-it-works' },
   { label: 'Our Team', href: '#team' },
   { label: 'Platform', href: '#platform' },
+  { label: 'Careers', href: 'https://shri-ai.org/careers', external: true },
 ]
 
 /* The single entry point into the product — same destination and label as
@@ -186,13 +190,20 @@ export default function LandingNavbar() {
 
           {/* ── Individual nav containers — desktop ── */}
           <nav aria-label="Primary navigation" className="hidden lg:flex items-center gap-3 xl:gap-3.5">
-            {NAV_LINKS.map(({ label, href, to }) => (
+            {NAV_LINKS.map(({ label, href, to, external }) => (
               to ? (
                 <Link key={label} to={to} style={chip} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
                   {label}
                 </Link>
               ) : (
-                <a key={label} href={href} style={chip} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
+                <a
+                  key={label}
+                  href={href}
+                  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : null)}
+                  style={chip}
+                  onMouseEnter={hoverIn}
+                  onMouseLeave={hoverOut}
+                >
                   {label}
                 </a>
               )
@@ -256,7 +267,7 @@ export default function LandingNavbar() {
           }}
         >
           <nav className="flex flex-col gap-2">
-            {[...NAV_LINKS, CTA].map(({ label, href, to }) => {
+            {[...NAV_LINKS, CTA].map(({ label, href, to, external }) => {
               const item = {
                 ...BODY,
                 fontSize: '13.5px',
@@ -271,7 +282,15 @@ export default function LandingNavbar() {
               return to ? (
                 <Link key={label} to={to} onClick={() => setMobileOpen(false)} style={item}>{label}</Link>
               ) : (
-                <a key={label} href={href} onClick={() => setMobileOpen(false)} style={item}>{label}</a>
+                <a
+                  key={label}
+                  href={href}
+                  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : null)}
+                  onClick={() => setMobileOpen(false)}
+                  style={item}
+                >
+                  {label}
+                </a>
               )
             })}
           </nav>

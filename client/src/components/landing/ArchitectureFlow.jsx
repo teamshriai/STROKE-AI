@@ -32,13 +32,11 @@ const STEPS = [
     title: 'Nearest ambulance',
     chip: 'Dispatch + vitals',
     desc: 'Reaches the patient, starts initial care, then drives to the scan lab.',
-    /* Tamil Nadu government 108 ambulance — the actual fleet this network
-       dispatches, rather than a generic foreign ambulance.
-       "The 108 Ambulance" by Wikimedia Commons user UY Scuti, CC BY-SA 3.0:
-       commons.wikimedia.org/wiki/File:The_108_Ambulance.jpg
-       Cropped to the 5:4 card frame and hosted locally. */
-    photo: '/landing/ambulance-108-tn.webp',
-    alt: 'A Tamil Nadu government 108 emergency ambulance responding on a highway',
+    /* Local Tamil Nadu ambulances. Supplied by the team
+       (public/assets/local-ambulance.jpeg); cropped to the 5:4 card frame
+       and re-encoded as WebP. */
+    photo: '/landing/ambulance-local-tn.webp',
+    alt: 'Tamil Nadu ambulances waiting outside a hospital',
   },
   {
     num: '03',
@@ -58,12 +56,13 @@ const STEPS = [
     title: 'Stroke AI ambulance',
     chip: 'Meds decided',
     desc: 'Meets the patient at the lab and gives the medication en route.',
-    /* The programme's own vehicle, in SHRI-AI + IndoStates Health livery.
-       Supplied by the team (public/assets/stroke-ai-ambulance.png); cropped
-       to the 5:4 card frame and re-encoded as WebP — the source PNG is
-       6.9 MB, for a card that renders around 230px wide. */
+    /* The programme's own vehicle, in Senus Healthcare Foundation /
+       Indo States Hospital livery. Supplied by the team
+       (public/assets/stroke-ambulance.png); cropped to the 5:4 card frame
+       and re-encoded as WebP — the source PNG is 1.9 MB, for a card that
+       renders around 230px wide. */
     photo: '/landing/stroke-ai-ambulance.webp',
-    alt: 'The Stroke AI ambulance in SHRI-AI and IndoStates Health livery, outside the IndoStates building',
+    alt: 'The Stroke AI ambulance in Senus Healthcare Foundation and Indo States Hospital livery',
     badge: 'AI',
   },
   {

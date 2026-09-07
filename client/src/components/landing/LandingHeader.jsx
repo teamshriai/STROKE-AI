@@ -367,7 +367,7 @@ export default function LandingHeader() {
               tone="dark"
               label="Your email"
               placeholder="you@gmail.com"
-              submitLabel="Notify the Launch"
+              submitLabel="Get connected"
             />
           </div>
         </div>
