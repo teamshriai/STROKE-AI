@@ -71,6 +71,14 @@ export const HERO_GROUND = '#1E2D46'
 /* The hero's dot texture — a soft light blue against that dark ground. */
 export const HERO_DOT_COLOR = '#8FBEEA'
 
+/* The one colour every highlighted word in the hero headline is set in — a
+   saturated full-value gold (HSV 42°, s 0.76, v 1.0). It is 1.58:1 against the
+   pure white of the rest of the line, so the highlights separate clearly
+   without breaking into a second colour, and 8.76:1 against HERO_GROUND, well
+   past AA at any size. Deliberately the same family as the CTA button's amber
+   (FLOW_AMBER), which ties the headline to the action below it. */
+export const HERO_ACCENT = '#FFC53D'
+
 /* ── Tints ───────────────────────────────────────────────────────────
    One shared set of grounds, walking warm → cool → warm. The flow diagram
    established them; every other panel on the page draws from the same five so

@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom'
 import LandingNavbar from './LandingNavbar.jsx'
 import LandingHeader from './LandingHeader.jsx'
@@ -6,11 +6,21 @@ import LandingFooter from './LandingFooter.jsx'
 
 export default function LandingPage() {
   const { hash } = useLocation()
+  const deepLinkHandled = useRef(false)
 
   // The browser tries to scroll to the URL fragment before this route's lazy
   // chunk has rendered the target section, so a direct/refreshed load of
   // e.g. /#services silently lands at the top instead. Retry once mounted.
   useEffect(() => {
+    // Only the FIRST hash of the session is a deep link needing that rescue.
+    // Every later hash change is the user clicking a nav anchor, which the
+    // browser is already animating via the root's `scroll-behavior: smooth`
+    // (index.css) — the instant scrollIntoView below used to fire on those
+    // too and snap the page, which is what made in-page navigation jump
+    // rather than glide.
+    if (deepLinkHandled.current) return
+    deepLinkHandled.current = true
+
     if (!hash) return
     const id = hash.slice(1)
 

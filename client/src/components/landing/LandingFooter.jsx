@@ -23,8 +23,9 @@ import { DISPLAY, BODY, STRONG, LABEL, CREAM, PAPER, INK, INK_BODY, INK_SUBTLE, 
    this page.
 ═══════════════════════════════════════════════════════════════════ */
 
-/* ── Reusable nav link ─────────────────────────────────────────── */
-function FooterLink({ href, to, children }) {
+/* ── Reusable nav link. `external` leaves the site, so those open in a new
+     tab with rel="noopener noreferrer". ───────────────────────────── */
+function FooterLink({ href, to, external, children }) {
   const base = {
     ...BODY,
     fontSize: '13.5px',
@@ -44,7 +45,13 @@ function FooterLink({ href, to, children }) {
     )
   }
   return (
-    <a href={href} style={base} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>
+    <a
+      href={href}
+      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : null)}
+      style={base}
+      onMouseEnter={hoverIn}
+      onMouseLeave={hoverOut}
+    >
       {children}
     </a>
   )
@@ -263,7 +270,7 @@ export default function LandingFooter() {
                   <nav aria-label="Footer site navigation" className="nf-rail-nav">
                     <FooterLink href="#services">Our Command Centre</FooterLink>
                     <FooterLink href="#how-it-works">Why It Matters</FooterLink>
-                    <FooterLink href="#team">Our Team</FooterLink>
+                    <FooterLink href="https://www.shri-ai.org/team" external>Our Team</FooterLink>
                     <FooterLink to="/app">Sign in</FooterLink>
                   </nav>
                 </div>

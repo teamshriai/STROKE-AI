@@ -20,7 +20,7 @@ import { BODY, STRONG, INK, INK_BODY, PAPER, RULE, EASE } from './theme.js'
 const NAV_LINKS = [
   { label: 'Our Command Centre', href: '#services' },
   { label: 'Why It Matters', href: '#how-it-works' },
-  { label: 'Our Team', href: '#team' },
+  { label: 'Our Team', href: 'https://www.shri-ai.org/team', external: true },
   { label: 'Platform', href: '#platform' },
   { label: 'Careers', href: 'https://shri-ai.org/careers', external: true },
 ]

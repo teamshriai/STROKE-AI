@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import {
   DISPLAY, BODY, STRONG, LABEL,
   CREAM, PAPER, INK, INK_BODY, INK_SUBTLE, RULE, TINT, HERO_GROUND, HERO_DOT_COLOR, ON_DARK, ON_DARK_BODY,
-  FLOW_CORAL, FLOW_AMBER,
+  FLOW_CORAL,
+  HERO_ACCENT,
   EASE, reducedMotion,
 } from './theme.js'
 import ArchitectureFlow from './ArchitectureFlow.jsx'
@@ -29,19 +30,6 @@ const MATTERS_CARDS = [
     tint: TINT.teal,
     text: 'Every layer of delay — recognising symptoms, reaching a hospital, reading a scan — compounds against the clock. Stroke AI is built to collapse that delay into a single, coordinated response.',
     cite: 'Source: Saver, J.L., "Time Is Brain — Quantified," Stroke, 2006.',
-  },
-]
-
-const TEAM = [
-  {
-    tint: TINT.clay,
-    name: 'SHRI-AI',
-    desc: 'Brings the AI and telehealth technology behind "AI for Health, Care for All" — imaging models, real-time coordination software, and the mobile platform patients and bystanders will actually use.',
-  },
-  {
-    tint: TINT.sky,
-    name: 'IndoStates Health Hospital',
-    desc: 'Brings the clinical and hospital network behind "Prevent, Screen, Treat" — decades of frontline emergency and neurology care, and the ambulance and scan-lab partnerships a stroke response depends on.',
   },
 ]
 
@@ -236,6 +224,14 @@ export default function LandingHeader() {
           .sa-hero-visual-slot { order: 0; width: 100%; margin: 0; }
         }
 
+        /* Sized to hold each of the headline's three lines on one line. */
+        .sa-hero-title { font-size: clamp(1.85rem, 2.9vw, 2.5rem); }
+        /* Below ~360px the longest line ("AI to Detect Stroke Early.") no
+           longer fits at 1.85rem and wraps, turning three lines into four. */
+        @media (max-width: 359px) {
+          .sa-hero-title { font-size: 1.5rem; }
+        }
+
         .sa-hero-sos {
           display: inline-flex;
           align-items: center;
@@ -304,25 +300,37 @@ export default function LandingHeader() {
               />
 
               <h1
+                className="sa-hero-title"
                 style={{
                   ...DISPLAY,
-                  /* Tuned to hold "Helping Every Second Count." on one line
-                     within the two-column layout's narrower text column —
-                     not the old full-bleed hero's width. */
-                  fontSize: 'clamp(1.85rem, 2.9vw, 2.5rem)',
+                  /* font-size lives in the stylesheet (.sa-hero-title), not
+                     here, so a media query can step it down on very narrow
+                     phones — an inline size would win over any CSS rule. */
                   lineHeight: 1.08,
                   letterSpacing: '-0.014em',
-                  color: ON_DARK,
+                  /* Pure white rather than the page's ON_DARK (92% white):
+                     the headline is the one element that should sit at the
+                     very top of the hero's tonal range, so nothing above it
+                     can read as brighter. Body copy below keeps ON_DARK_BODY,
+                     which is what holds the hierarchy. */
+                  color: '#FFFFFF',
                   margin: '0 0 clamp(1rem, 2vw, 1.4rem)',
                   opacity: heroIn ? 1 : 0,
                   transform: heroIn ? 'translateY(0)' : 'translateY(18px)',
                   transition: `opacity 1s ${EASE} 160ms, transform 1s ${EASE} 160ms`,
                 }}
               >
+                {/* One accented word closes each line, all three in the same
+                    gold — see the HERO_ACCENT note in theme.js. */}
                 <span style={{ display: 'block' }}>
-                  AI powered <span style={{ color: FLOW_AMBER }}>Command center</span> for Stroke.
+                  AI to Detect Stroke <span style={{ color: HERO_ACCENT }}>Early.</span>
                 </span>
-                <span style={{ display: 'block' }}>Helping Every Second Count.</span>
+                <span style={{ display: 'block' }}>
+                  Treat <span style={{ color: HERO_ACCENT }}>Smarter.</span>
+                </span>
+                <span style={{ display: 'block' }}>
+                  Save <span style={{ color: HERO_ACCENT }}>Lives.</span>
+                </span>
               </h1>
 
               <p
@@ -554,48 +562,8 @@ export default function LandingHeader() {
         </div>
       </section>
 
-      {/* ━━━━━━━━━━━━━━━━━━━━━━━━ OUR TEAM ━━━━━━━━━━━━━━━━━━━━━━━━ */}
-      <section id="team" style={{ background: PAPER, borderTop: `1px solid ${RULE}`, position: 'relative', zIndex: 10, scrollMarginTop: '124px' }}>
-        <div style={{
-          maxWidth: '1800px', margin: '0 auto',
-          padding: 'clamp(2.25rem, 4vw, 3.5rem) clamp(1.25rem, 3vw, 2.5rem)',
-        }}>
-          <Reveal>
-            <SectionHead label="Our Team" title="One mission, strong partnership." />
-          </Reveal>
-
-          <div style={{ maxWidth: '1320px', margin: '0 auto' }}>
-            <div className="sa-grid-2" style={{ margin: 'clamp(1.75rem, 3.5vw, 2.75rem) 0 clamp(2rem, 4vw, 2.75rem)' }}>
-              {TEAM.map((t, i) => (
-                <Reveal key={t.name} delay={i * 90}>
-                  <div style={{
-                    background: t.tint.bg, border: `1px solid ${RULE}`, borderRadius: '10px',
-                    padding: 'clamp(20px, 2.4vw, 30px)', height: '100%', boxSizing: 'border-box',
-                  }}>
-                    <h3 style={{ ...STRONG, fontSize: 'clamp(16px, 1.5vw, 19px)', color: INK, margin: '0 0 10px' }}>
-                      {t.name}
-                    </h3>
-                    <p style={{ ...BODY, fontSize: 'clamp(13px, 1.05vw, 14.5px)', lineHeight: 1.7, color: INK_BODY, margin: 0 }}>
-                      {t.desc}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-
-            <Reveal delay={100}>
-              <p style={{
-                ...BODY, fontSize: 'clamp(13.5px, 1.15vw, 15.5px)', lineHeight: 1.75,
-                color: INK_BODY, textAlign: 'center', maxWidth: '620px', margin: '0 auto',
-              }}>
-                Together, we&rsquo;re building India&rsquo;s first mobile stroke-response network —
-                combining telehealth, AI-assisted imaging, and a coordinated ambulance network into a
-                single race against the clock.
-              </p>
-            </Reveal>
-          </div>
-        </div>
-      </section>
+      {/* The team section used to sit here. "Our Team" now points at
+          shri-ai.org/team instead — see NAV_LINKS in LandingNavbar.jsx. */}
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━ WHY STROKE AI ━━━━━━━━━━━━━━━━━━━━━━━━ */}
       <section

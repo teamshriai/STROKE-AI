@@ -329,6 +329,16 @@ export default function ArchitectureFlow() {
             display: flex;
             flex-direction: column;
           }
+          /* The bar ends just past the outer two connectors rather than running
+             the full width. Those rise from the centres of columns 1 and 5, so
+             with five 1fr columns and four gaps the span between them is
+             (100% - one column) = 80% + 0.8×gap. The +44px is the small
+             overhang past each arrow (22px a side). */
+          .sa-arch-bar {
+            width: calc(80% + (var(--gap) * 0.8) + 44px);
+            margin-inline: auto;
+          }
+
           .sa-arch-conn { height: var(--conn-h); }
           /* Centred on the card, sitting in the column gap */
           .sa-arch-chev-right {
