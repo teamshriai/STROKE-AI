@@ -26,8 +26,8 @@ const NAV_LINKS = [
 ]
 
 /* The single entry point into the product — same destination and label as
-   the "Explore Stroke-AI" button on the old landing page. */
-const CTA = { label: 'Explore Stroke-AI', to: '/app' }
+   the "View Demo" button on the old landing page. */
+const CTA = { label: 'View Demo', to: '/app' }
 
 export default function LandingNavbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -210,7 +210,7 @@ export default function LandingNavbar() {
             ))}
           </nav>
 
-          {/* ── Explore Stroke-AI — desktop ── */}
+          {/* ── View Demo — desktop ── */}
           <Link
             to={CTA.to}
             className="hidden lg:block shrink-0"

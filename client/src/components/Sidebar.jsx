@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   {
     to: '/app/brain-haemorrhage-pathway',
     end: false,
-    label: 'Brain Haemorrhage Pathway',
+    label: 'ICH Demo',
     hint: 'Live NCCT model inference',
   },
 ];

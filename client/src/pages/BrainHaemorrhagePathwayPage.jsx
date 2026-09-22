@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { AlertTriangle, Database, FolderOpen, Info, UploadCloud } from 'lucide-react';
 import Eyebrow from '../components/Eyebrow.jsx';
 import {
   SELECT_CHEVRON,
@@ -6,8 +7,6 @@ import {
   buttonPrimary,
   buttonSolid,
   selectControl,
-  tabGroup,
-  tabItem,
 } from '../components/buttonStyles.js';
 import { StatusPill } from '../components/report/ReportPrimitives.jsx';
 import { fetchSamples, predictSample, predictUpload } from '../lib/api.js';
@@ -117,41 +116,45 @@ export default function BrainHaemorrhagePathwayPage() {
         </p>
       </header>
 
-      <div className="mt-6 flex flex-col gap-3">
-        <p className="rounded-lg border border-crimson/25 bg-crimson/[0.04] px-4 py-3 text-sm leading-relaxed text-slate">
-          <strong className="font-medium text-crimson">Research prototype — not for clinical use.</strong> Trained on
-          ~320 CQ500 studies as a proof of concept (held-out test AUROC 0.878 for haemorrhage). It demonstrates the
-          pathway end to end; it does not diagnose anyone.
-        </p>
-        <p className="rounded-lg border border-navy/20 bg-navy/[0.04] px-4 py-3 text-sm leading-relaxed text-slate">
-          <strong className="font-medium text-navy">Non-contrast CT (NCCT) head, axial only.</strong> The model was
-          trained exclusively on plain pre-contrast brain CT — bone-kernel, contrast-enhanced or non-head series
-          (neck, orbit, sinus) will produce meaningless output.
-        </p>
-      </div>
-
       {/* ── Input ─────────────────────────────────────────────────── */}
       <section className="mt-8 rounded-xl border border-ink/10 bg-white/60 p-5 sm:p-6">
-        <div className={tabGroup} role="tablist" aria-label="Input source">
+        {/* Source picker — two selectable cards instead of a pill tab group */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2" role="tablist" aria-label="Input source">
           {[
-            { key: 'sample', label: 'Bundled sample study' },
-            { key: 'upload', label: 'Upload DICOM slices' },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              type="button"
-              role="tab"
-              aria-selected={mode === tab.key}
-              aria-controls="input-panel"
-              onClick={() => setMode(tab.key)}
-              className={tabItem(mode === tab.key)}
-            >
-              {tab.label}
-            </button>
-          ))}
+            { key: 'sample', label: 'Bundled sample study', hint: 'Held-out CQ500 case', icon: Database },
+            { key: 'upload', label: 'Upload DICOM slices', hint: 'From your computer', icon: UploadCloud },
+          ].map((tab) => {
+            const Icon = tab.icon;
+            const active = mode === tab.key;
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                aria-controls="input-panel"
+                onClick={() => setMode(tab.key)}
+                className={`flex cursor-pointer flex-col items-center gap-2 rounded-xl border px-4 py-5 text-center shadow-sm transition-[border-color,background-color,box-shadow] duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy ${
+                  active
+                    ? 'border-navy bg-navy/[0.05]'
+                    : 'border-ink/50 bg-white hover:border-ink/70 hover:bg-ink/[0.02]'
+                }`}
+              >
+                <span
+                  className={`flex h-10 w-10 items-center justify-center rounded-full ${
+                    active ? 'bg-navy text-white' : 'bg-ink/[0.06] text-slate'
+                  }`}
+                >
+                  <Icon size={18} strokeWidth={1.75} />
+                </span>
+                <span className={`text-sm font-semibold ${active ? 'text-navy' : 'text-ink'}`}>{tab.label}</span>
+                <span className="text-xs text-slate/70">{tab.hint}</span>
+              </button>
+            );
+          })}
         </div>
 
-        <div className="mt-5" id="input-panel" role="tabpanel">
+        <div className="mt-6" id="input-panel" role="tabpanel">
           {mode === 'sample' ? (
             <div>
               <label htmlFor="sample-select" className="block text-xs uppercase tracking-[0.14em] text-slate/70">
@@ -208,7 +211,10 @@ export default function BrainHaemorrhagePathwayPage() {
                   isDragging ? 'border-navy bg-navy/[0.04]' : 'border-ink/20 bg-ink/[0.02]'
                 }`}
               >
-                <p className="text-sm text-ink">
+                <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-ink/10 bg-white shadow-sm">
+                  <UploadCloud size={20} strokeWidth={1.6} className="text-navy" />
+                </span>
+                <p className="mt-4 text-sm text-ink">
                   Drag and drop the patient&rsquo;s <strong className="font-medium">NCCT test data</strong> here
                 </p>
                 <p className="mt-1 text-xs text-slate/70">
@@ -221,6 +227,7 @@ export default function BrainHaemorrhagePathwayPage() {
                     onClick={() => folderInputRef.current?.click()}
                     className={buttonSolid}
                   >
+                    <FolderOpen size={15} strokeWidth={1.9} />
                     Browse folder
                   </button>
                   <button
@@ -230,6 +237,16 @@ export default function BrainHaemorrhagePathwayPage() {
                   >
                     Browse files
                   </button>
+                </div>
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5">
+                  {['.dcm', '.dicom', 'Folders supported'].map((chip) => (
+                    <span
+                      key={chip}
+                      className="rounded-full border border-ink/15 bg-white px-2.5 py-1 text-[0.7rem] font-medium text-slate/80"
+                    >
+                      {chip}
+                    </span>
+                  ))}
                 </div>
                 <input
                   ref={folderInputRef}
@@ -267,12 +284,32 @@ export default function BrainHaemorrhagePathwayPage() {
           type="button"
           onClick={handleRun}
           disabled={!canRun || isRunning}
-          className={`mt-6 ${buttonPrimary}`}
+          className={`mt-6 w-full ${buttonPrimary}`}
         >
           {isRunning ? 'Running inference…' : 'Run inference'}
         </button>
 
         {error && <p className="mt-4 text-sm text-crimson">{error}</p>}
+
+        {/* ── Disclaimers ───────────────────────────────────────────── */}
+        <div className="mt-6 flex flex-col gap-3 border-t border-ink/[0.07] pt-6">
+          <p className="flex items-start gap-2.5 rounded-lg border border-crimson/25 bg-crimson/[0.04] px-4 py-3 text-sm leading-relaxed text-slate">
+            <AlertTriangle size={16} strokeWidth={2} className="mt-0.5 flex-none text-crimson" />
+            <span>
+              <strong className="font-medium text-crimson">Research prototype — not for clinical use.</strong> Trained
+              on ~320 CQ500 studies as a proof of concept (held-out test AUROC 0.878 for haemorrhage). It demonstrates
+              the pathway end to end; it does not diagnose anyone.
+            </span>
+          </p>
+          <p className="flex items-start gap-2.5 rounded-lg border border-navy/20 bg-navy/[0.04] px-4 py-3 text-sm leading-relaxed text-slate">
+            <Info size={16} strokeWidth={2} className="mt-0.5 flex-none text-navy" />
+            <span>
+              <strong className="font-medium text-navy">Non-contrast CT (NCCT) head, axial only.</strong> The model was
+              trained exclusively on plain pre-contrast brain CT — bone-kernel, contrast-enhanced or non-head series
+              (neck, orbit, sinus) will produce meaningless output.
+            </span>
+          </p>
+        </div>
       </section>
 
       {/* ── Result ────────────────────────────────────────────────── */}
