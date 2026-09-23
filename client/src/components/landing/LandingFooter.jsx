@@ -271,7 +271,7 @@ export default function LandingFooter() {
                   <nav aria-label="Footer site navigation" className="nf-rail-nav">
                     <FooterLink href="#services">SHRI-AI Command Centre</FooterLink>
                     <FooterLink href="#how-it-works">Why It Matters</FooterLink>
-                    <FooterLink href="https://www.shri-ai.org/team" external>Our Team</FooterLink>
+                    <FooterLink href="https://www.shri-ai.org/team" external>Team</FooterLink>
                     <FooterLink to="/app">Sign in</FooterLink>
                   </nav>
                 </div>

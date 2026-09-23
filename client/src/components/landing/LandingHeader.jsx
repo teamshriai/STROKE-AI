@@ -562,7 +562,7 @@ export default function LandingHeader() {
         </div>
       </section>
 
-      {/* The team section used to sit here. "Our Team" now points at
+      {/* The team section used to sit here. "Team" now points at
           shri-ai.org/team instead — see NAV_LINKS in LandingNavbar.jsx. */}
 
       {/* ━━━━━━━━━━━━━━━━━━━━━━━━ WHY STROKE AI ━━━━━━━━━━━━━━━━━━━━━━━━ */}
