@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import BrandMark from '../common/BrandMark.jsx'
+import { LogoLink } from '../report/ReportPrimitives.jsx'
+import { INDOSTATES_URL, SHRI_AI_URL } from '../../lib/links.js'
 import { BODY, STRONG, INK, INK_BODY, PAPER, RULE, EASE } from './theme.js'
 
 /**
@@ -18,7 +20,7 @@ import { BODY, STRONG, INK, INK_BODY, PAPER, RULE, EASE } from './theme.js'
    carry rel="noopener noreferrer" — without noopener the opened page can
    reach back through window.opener. */
 const NAV_LINKS = [
-  { label: 'Our Command Centre', href: '#services' },
+  { label: 'SHRI-AI Command Centre', href: '#services' },
   { label: 'Why It Matters', href: '#how-it-works' },
   { label: 'Our Team', href: 'https://www.shri-ai.org/team', external: true },
   { label: 'Platform', href: '#platform' },
@@ -93,6 +95,20 @@ export default function LandingNavbar() {
     transition: `color .25s ${EASE}, background .25s ${EASE}, border-color .25s ${EASE}`,
   }
 
+  /* The white plate each partner mark sits on. `transform` is named in the
+     transition because this inline `transition` overrides LogoLink's
+     `transition-transform` class outright — without it the hover scale snaps
+     instead of easing. */
+  const plate = {
+    display: 'flex',
+    alignItems: 'center',
+    background: '#FFFFFF',
+    border: `1px solid ${scrolled ? RULE : 'rgba(255,255,255,0.42)'}`,
+    borderRadius: '8px',
+    padding: '6px 10px',
+    transition: `border-color .35s ${EASE}, transform .3s ${EASE}`,
+  }
+
   const hoverIn = (e) => {
     e.currentTarget.style.color = inkStrong
     e.currentTarget.style.background = scrolled ? '#ffffff' : 'rgba(255,255,255,0.18)'
@@ -151,40 +167,26 @@ export default function LandingNavbar() {
           <span className="hidden xl:flex items-center shrink-0" style={{ gap: '10px' }}>
             {/* Same pair as on the report, so the branding doesn't change
                 identity between the bar and the page. */}
-            <span style={{
-              display: 'flex', alignItems: 'center',
-              background: '#FFFFFF',
-              border: `1px solid ${scrolled ? RULE : 'rgba(255,255,255,0.42)'}`,
-              borderRadius: '8px',
-              padding: '6px 10px',
-              transition: `border-color .35s ${EASE}`,
-            }}>
+            <LogoLink href={SHRI_AI_URL} alt="SHRI-AI" style={plate}>
               <picture>
                 <source srcSet="/landing/shri-ai-logo-trans.webp" type="image/webp" />
                 <img
-                  src="/landing/shri-ai-logo.png" alt="SHRI-AI"
+                  src="/landing/shri-ai-logo.png" alt="" aria-hidden="true"
                   width="640" height="640" decoding="async"
                   style={{ height: '40px', width: 'auto', objectFit: 'contain', display: 'block' }}
                 />
               </picture>
-            </span>
-            <span style={{
-              display: 'flex', alignItems: 'center',
-              background: '#FFFFFF',
-              border: `1px solid ${scrolled ? RULE : 'rgba(255,255,255,0.42)'}`,
-              borderRadius: '8px',
-              padding: '6px 10px',
-              transition: `border-color .35s ${EASE}`,
-            }}>
+            </LogoLink>
+            <LogoLink href={INDOSTATES_URL} alt="IndoStates Health Hospital" style={plate}>
               <picture>
                 <source srcSet="/landing/logo-indostates-trans.webp" type="image/webp" />
                 <img
-                  src="/landing/logo-indostates.png" alt="IndoStates Health Hospital"
+                  src="/landing/logo-indostates.png" alt="" aria-hidden="true"
                   width="640" height="156" decoding="async"
                   style={{ height: '26px', width: 'auto', objectFit: 'contain', display: 'block' }}
                 />
               </picture>
-            </span>
+            </LogoLink>
           </span>
           </div>
 

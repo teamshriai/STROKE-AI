@@ -1,4 +1,6 @@
 import { BODY, STRONG, PAPER, INK, INK_BODY, RULE, FLOW_AMBER, FLOW_GOLD, FLOW_NAVY, TINT } from './theme.js'
+import { LogoLink } from '../report/ReportPrimitives.jsx'
+import { INDOSTATES_URL, SHRI_AI_URL } from '../../lib/links.js'
 
 /* ═══════════════════════════════════════════════════════════════════
    ArchitectureFlow — the response path, drawn.
@@ -165,8 +167,14 @@ export default function ArchitectureFlow() {
         }
         .sa-arch-bar-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 7px; }
 
-        /* Ribbon mark in a gold ring, as in the reference artboard */
-        .sa-arch-bar-mark {
+        /* Ribbon mark in a gold ring, as in the reference artboard.
+           Both plates are scoped under .sa-arch-bar rather than written as bare
+           class selectors: each is now a LogoLink, which carries Tailwind's
+           "inline-flex rounded-lg" on the same element. (Backticks are avoided
+           in this comment on purpose: it lives inside a template literal.) At equal specificity the
+           winner would come down to stylesheet order, so the extra class here
+           (0,2,0) settles it and the circle stays a circle. */
+        .sa-arch-bar .sa-arch-bar-mark {
           flex-shrink: 0;
           width: clamp(56px, 5.6vw, 84px);
           height: clamp(56px, 5.6vw, 84px);
@@ -176,18 +184,24 @@ export default function ArchitectureFlow() {
           background: #FFFFFF;
           display: grid;
           place-items: center;
+          /* Belt and braces: centres the mark under grid *or* flex, so the
+             ribbon never drifts to a corner if the display rule ever loses. */
+          align-items: center;
+          justify-content: center;
         }
-        .sa-arch-bar-mark img { width: 68%; height: 68%; object-fit: contain; display: block; }
+        .sa-arch-bar .sa-arch-bar-mark img { width: 68%; height: 68%; object-fit: contain; display: block; }
 
         /* The IndoStates wordmark is dark artwork, so it needs a light plate to
            sit on rather than the navy. */
-        .sa-arch-bar-logo {
+        .sa-arch-bar .sa-arch-bar-logo {
           flex-shrink: 0;
           background: #FFFFFF;
           border-radius: 7px;
           padding: clamp(7px, 0.9vw, 11px) clamp(10px, 1.2vw, 15px);
+          align-items: center;
+          justify-content: center;
         }
-        .sa-arch-bar-logo img {
+        .sa-arch-bar .sa-arch-bar-logo img {
           height: clamp(26px, 2.6vw, 38px);
           width: auto;
           max-width: 100%;
@@ -404,9 +418,9 @@ export default function ArchitectureFlow() {
 
       {/* ── Command centre ── */}
       <div className="sa-arch-bar">
-        <span className="sa-arch-bar-mark">
+        <LogoLink href={SHRI_AI_URL} alt="SHRI-AI" anchorClassName="sa-arch-bar-mark">
           <img src="/landing/shri-ai-mark.webp" alt="" aria-hidden="true" width="360" height="360" decoding="async" />
-        </span>
+        </LogoLink>
 
         <div className="sa-arch-bar-main">
           <h3 style={{ ...STRONG, fontSize: 'clamp(15.5px, 1.6vw, 20px)', lineHeight: 1.3, color: '#FFFDF8', margin: 0 }}>
@@ -420,16 +434,16 @@ export default function ArchitectureFlow() {
           </p>
         </div>
 
-        <span className="sa-arch-bar-logo">
+        <LogoLink href={INDOSTATES_URL} alt="IndoStates Health Hospital" anchorClassName="sa-arch-bar-logo">
           <picture>
             <source srcSet="/landing/logo-indostates-trans.webp" type="image/webp" />
             <img
               src="/landing/logo-indostates.png"
-              alt="IndoStates Health Hospital"
+              alt="" aria-hidden="true"
               width="640" height="156" decoding="async"
             />
           </picture>
-        </span>
+        </LogoLink>
       </div>
 
       <p className="sa-sr">

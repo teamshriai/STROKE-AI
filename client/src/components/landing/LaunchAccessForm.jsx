@@ -30,7 +30,7 @@ export default function LaunchAccessForm({
   tone = 'light',
   label = 'Work email',
   placeholder = 'you@hospital.org',
-  submitLabel = 'Request Launch Access',
+  submitLabel = 'Connect Your Hospital',
 }) {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState('idle') // idle | submitting | error | success
@@ -70,7 +70,7 @@ export default function LaunchAccessForm({
 
       {status === 'success' ? (
         <p role="status" style={{ ...STRONG, color: c.text, fontSize: 'clamp(14px, 1.1vw, 16px)', lineHeight: 1.6, margin: 0 }}>
-          Thanks — we'll be in touch when Stroke AI is ready for your hospital.
+          Thanks — our clinical team will be in touch about bringing Stroke AI to your hospital.
         </p>
       ) : (
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: 'clamp(10px, 1.6vw, 16px)' }}>
@@ -136,7 +136,8 @@ export default function LaunchAccessForm({
 
       {status !== 'success' && (
         <p style={{ ...BODY, color: c.caption, fontSize: '12px', lineHeight: 1.6, margin: '12px 0 0' }}>
-          No spam. We'll only reach out when Stroke AI is ready for your hospital.
+          No spam. A direct line to the team building AI stroke triage — from the
+          emergency call to the thrombectomy table.
         </p>
       )}
     </form>

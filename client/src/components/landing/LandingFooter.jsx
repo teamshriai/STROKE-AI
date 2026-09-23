@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Mail, Phone, MapPin, Globe } from 'lucide-react'
 import BrandMark from '../common/BrandMark.jsx'
 import LaunchAccessForm from './LaunchAccessForm.jsx'
+import { APP_VERSION } from '../../lib/version.js'
 import { DISPLAY, BODY, STRONG, LABEL, CREAM, PAPER, INK, INK_BODY, INK_SUBTLE, RULE, FLOW_AMBER, FLOW_BLUE, EASE } from './theme.js'
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -11,7 +12,7 @@ import { DISPLAY, BODY, STRONG, LABEL, CREAM, PAPER, INK, INK_BODY, INK_SUBTLE, 
      │  Get Stroke AI ready                        [ Get Started ] │
      ├─────────────────────────────────────────────────────────────┤  ← hairline
      │  ✳ Stroke AI          QUICK LINKS          GLOBAL REACH      │
-     │  contact details      Our Command Centre…  map + HQ + reach  │
+     │  contact details      SHRI-AI Command Centre… map + HQ + reach  │
      ├─────────────────────────────────────────────────────────────┤  ← hairline
      │                       A joint initiative … © year Stroke AI │
      └─────────────────────────────────────────────────────────────┘
@@ -268,7 +269,7 @@ export default function LandingFooter() {
                     Quick Links
                   </span>
                   <nav aria-label="Footer site navigation" className="nf-rail-nav">
-                    <FooterLink href="#services">Our Command Centre</FooterLink>
+                    <FooterLink href="#services">SHRI-AI Command Centre</FooterLink>
                     <FooterLink href="#how-it-works">Why It Matters</FooterLink>
                     <FooterLink href="https://www.shri-ai.org/team" external>Our Team</FooterLink>
                     <FooterLink to="/app">Sign in</FooterLink>
@@ -321,6 +322,19 @@ export default function LandingFooter() {
             </p>
             <p style={{ ...BODY, fontSize: '11.5px', color: INK_SUBTLE, margin: 0, lineHeight: 1.6 }}>
               © {year} Stroke AI. All rights reserved.
+            </p>
+            {/* Build stamp — re-dated by Vite on every deploy, see lib/version.js. */}
+            <p
+              style={{
+                ...BODY,
+                fontSize: '11px',
+                color: INK_SUBTLE,
+                margin: 0,
+                lineHeight: 1.6,
+                fontVariantNumeric: 'tabular-nums',
+              }}
+            >
+              {APP_VERSION}
             </p>
           </div>
 

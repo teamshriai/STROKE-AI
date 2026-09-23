@@ -208,16 +208,21 @@ export function StatTile({ label, value, unit, note, tone = 'navy', meter }) {
 
 // ── Links ──────────────────────────────────────────────────────────────────
 
-export function LogoLink({ href, src, alt, className }) {
+// `anchorClassName` styles the link itself; `children` lets a caller supply its own artwork — the landing page wraps a
+// <picture> so its WebP sources survive — and `style` carries the inline-styled
+// white plates those marks sit on. Both are optional: `className` still lands on
+// the built-in <img>, so existing call sites are unaffected.
+export function LogoLink({ href, src, alt, className, anchorClassName, style, children }) {
   return (
     <a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={alt}
-      className="inline-flex rounded-lg transition-transform duration-300 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson"
+      style={style}
+      className={`inline-flex rounded-lg transition-transform duration-300 hover:scale-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crimson${anchorClassName ? ` ${anchorClassName}` : ''}`}
     >
-      <img src={src} alt={alt} className={className} />
+      {children ?? <img src={src} alt={alt} className={className} />}
     </a>
   );
 }
