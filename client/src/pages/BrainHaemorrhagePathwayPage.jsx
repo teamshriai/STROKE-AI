@@ -121,8 +121,8 @@ export default function BrainHaemorrhagePathwayPage() {
         {/* Source picker — two selectable cards instead of a pill tab group */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2" role="tablist" aria-label="Input source">
           {[
-            { key: 'sample', label: 'Bundled sample study', hint: 'Held-out CQ500 case', icon: Database },
-            { key: 'upload', label: 'Upload DICOM slices', hint: 'From your computer', icon: UploadCloud },
+            { key: 'sample', label: 'Remote access', hint: 'Held-out CQ500 case', icon: Database },
+            { key: 'upload', label: 'Local Upload', hint: 'From your computer', icon: UploadCloud },
           ].map((tab) => {
             const Icon = tab.icon;
             const active = mode === tab.key;
